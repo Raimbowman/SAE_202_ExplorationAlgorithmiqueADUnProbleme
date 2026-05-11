@@ -208,13 +208,33 @@ public class Polynome {
 	}
 	
 	@Override
-	/**
-	 * Trnasforme le polynome en chaine de caractère plus
-	 * facilement lisible par un utilisateur
-	 * @return chaine de caractère de la forme : 2x^2+3x-4
-	 */
+	/** @see java.lang.Object#toString() */
 	public String toString() {
-		return ""; //STUB
+	    String chaine = "";
+
+	    for (int indice = coefficients.length - 1; indice >= 0; indice--) {
+	        double coef = coefficients[indice];
+	        double absCoef = Math.abs(coef);
+
+	        if (!chaine.isEmpty() && coef > 0) {
+	            chaine += "+";
+	        } else if (coef < 0) {
+	            chaine += "-";
+	        }
+	        if (indice == 0) {
+	            chaine += absCoef;						// Terme constant
+	        } else if (indice == 1) {
+	            if (absCoef != 1) chaine += absCoef;	// Terme en x
+	            chaine += "x";
+	        } else {									// Terme en x^n
+	            if (absCoef != 1) {
+	            	chaine += absCoef;
+	            }
+	            chaine += "x^" + indice;
+	        }
+	    }
+
+	    return chaine.isEmpty() ? "0" : chaine;			// Polynôme nul
 	}
 	
 	/**

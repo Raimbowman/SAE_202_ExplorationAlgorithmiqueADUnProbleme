@@ -469,4 +469,65 @@ class PolynomeTest {
                 "Echec addition deux polynômes de degré 0"
         );
     }
+    
+
+	@Test
+	void testSoustraction() {
+	    // Deux polynômes de même degré
+	    assertArrayEquals(
+	        new double[] {2, 10},
+	        new Polynome(new double[] {4, 20})
+	            .soustraction(new Polynome(new double[] {2, 10})).getCoefficients(),
+	        "Echec soustraction de deux polynômes de degré 1"
+	    );
+	    // Deux polynômes de degré 2
+	    assertArrayEquals(
+	        new double[] {-11, -15, 16},
+	        new Polynome(new double[] {2, -10, 4})
+	            .soustraction(new Polynome(new double[] {13, 5, -12})).getCoefficients(),
+	        "Echec soustraction de deux polynômes de degré 2"
+	    );
+	    // Polynômes de degrés différents
+	    assertArrayEquals(
+	        new double[] {25, -5, -13, -10, 3},
+	        new Polynome(new double[] {32, -1, -10, 5, 3})
+	            .soustraction(new Polynome(new double[] {7, 4, 3, 15})).getCoefficients(),
+	        "Echec soustraction d'un polynôme de degré 4 et d'un polynôme de degré 3"
+	    );
+	    // Soustraction avec coefficients négatifs
+	    assertArrayEquals(
+	        new double[] {6, -10, 1},
+	        new Polynome(new double[] {3, 5, 1})
+	            .soustraction(new Polynome(new double[] {-3, 15})).getCoefficients(),
+	        "Echec soustraction avec coefficients négatifs"
+	    );
+	    // Soustraction avec coefficients décimaux
+	    assertArrayEquals(
+	        new double[] {-0.5, 2.0},
+	        new Polynome(new double[] {1.5, 2.0})
+	            .soustraction(new Polynome(new double[] {2.0})).getCoefficients(),
+	        "Echec soustraction avec coefficients décimaux"
+	    );
+	    // Soustraction de deux polynômes de degré 0
+	    assertArrayEquals(
+	        new double[] {-1},
+	        new Polynome(new double[] {3})
+	            .soustraction(new Polynome(new double[] {4})).getCoefficients(),
+	        "Echec soustraction deux polynômes de degré 0"
+	    );
+	    // Soustraction d'un polynôme par lui-même (résultat nul)
+	    assertArrayEquals(
+	        new double[] {0},
+	        new Polynome(new double[] {5})
+	            .soustraction(new Polynome(new double[] {5})).getCoefficients(),
+	        "Echec soustraction d'un polynôme par lui-même"
+	    );
+	    // Soustraction d'un polynôme de degré 4 et d'un polynôme de degré 0
+	    assertArrayEquals(
+	        new double[] {-4, 2, 3, 4, 5},
+	        new Polynome(new double[] {1, 2, 3, 4, 5})
+	            .soustraction(new Polynome(new double[] {5})).getCoefficients(),
+	        "Echec soustraction polynôme degré 4 et degré 0"
+	    );
+	}
 }

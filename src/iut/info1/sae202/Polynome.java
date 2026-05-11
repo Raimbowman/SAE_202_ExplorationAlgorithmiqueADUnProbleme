@@ -245,6 +245,17 @@ public class Polynome {
         }
         return new Polynome(somme);
     }
+    
+    /**
+     * Soustrait le polynome par un un autre polynome en paramètre
+     * @param secondPolynome polynome par lequel soustraire le premier polynome
+     * @return un polynome contenant les coefficients du résultat
+     */
+    public Polynome soustraction(Polynome secondPolynome) {
+    	secondPolynome = secondPolynome.multiplication(-1);
+    	Polynome resultat = this.addition(secondPolynome);
+    	return resultat;
+    }
 
     /**
      * Multiplie le polynome par un réel

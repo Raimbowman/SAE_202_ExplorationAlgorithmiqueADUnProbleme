@@ -387,4 +387,86 @@ class PolynomeTest {
 			 	     new Polynome(new double[] {2, 1, -1}, new int[] {2, 1, 1}, 1).toString(),
 			 	     "Echec des racines 2 (ordre 2), 1 et -1 avec coefficient 1");
 	}
+	
+	@Test
+	void testAddition() {
+		assertArrayEquals(
+			    new double[] {16, -10},
+			    new Polynome(new double[] {4, 20})
+			        .addition(new Polynome(new double[] {12, -30})).getCoefficients(),
+			    "Echec addition de deux polynômes de degré 1"
+			);
+		assertArrayEquals(
+			    new double[] {15, -5, -8},
+			    new Polynome(new double[] {2, -10, 4})
+			        .addition(new Polynome(new double[] {13, 5, -12})).getCoefficients(),
+			    "Echec addition de deux polynômes de degré 2"
+			);
+		assertArrayEquals(
+		    new double[] {-6, -2, -2, 4},
+		    new Polynome(new double[] {1, -5, 2, 3})
+		        .addition(new Polynome(new double[] {-7, 3, -4, 1})).getCoefficients(),
+		    "Echec addition de deux polynômes de degré 3"
+		);
+		assertArrayEquals(
+		    new double[] {30, 3, -7, 20, 3},
+		    new Polynome(new double[] {32, -1, -10, 5, 3})
+		        .addition(new Polynome(new double[] {-2, 4, 3, 15})).getCoefficients(),
+		    "Echec addition d'un polynome de degré 4 et d'un polynome de degré 3"
+		);
+		assertArrayEquals(
+			    new double[] {-4, 37, -40, -3, 21, 12},
+			    new Polynome(new double[] {-11, 31, -54})
+			        .addition(new Polynome(new double[] {7, 6, 14, -3, 21, 12})).getCoefficients(),
+			    "Echec addition d'un polynome de degré 2 et d'un polynome de degré 5"
+		);
+		assertArrayEquals(
+			    new double[] {6, 2, 3, 4, 5},
+			    new Polynome(new double[] {1, 2, 3, 4, 5})
+			        .addition(new Polynome(new double[] {5})).getCoefficients(),
+			    "Echec addition polynôme degré 4 et degré 0"
+		);
+		assertArrayEquals(
+		    new double[] {-23, 53, -66, 2},
+		    new Polynome(new double[] {-11, 31, -54})
+		        .addition(new Polynome(new double[] {1, 2, 3},
+		                               new int[] {1, 1, 1},
+		                               2)).getCoefficients(),
+		        "Echec addition polynôme degré 2 et polynôme degré 3 constructeur 2"
+		);
+		assertArrayEquals(
+		    new double[] {-14, 31, -51},
+		    new Polynome(new double[] {-11, 31, -54})
+		        .addition(new Polynome(new double[] {-1, 1},
+		                               new int[] {1, 1},
+		                               3)).getCoefficients(),
+		         "Echec addition polynôme degré 2 constructeur 1 et degré 2 constructeur 2"
+		);
+		assertArrayEquals(
+		    new double[] {1, 4, 3, 4, 5},
+		    new Polynome(new double[] {1, 2, 3, 4, 5})
+		        .addition(new Polynome(new double[] {0},
+		                               new int[] {1},
+		                               2)).getCoefficients(),
+		        "Echec addition polynôme degré 4 constructeur 1 et degré 1 constructeur 2"
+		);
+		assertArrayEquals(
+			    new double[] {0, 0, 1},
+			    new Polynome(new double[] {3, 5, 1})
+			        .addition(new Polynome(new double[] {-3, -5})).getCoefficients(),
+			    "Echec addition avec coefficients négatifs"
+		);
+		assertArrayEquals(
+			    new double[] {3.5, 2.0},
+			    new Polynome(new double[] {1.5, 2.0})
+			        .addition(new Polynome(new double[] {2.0})).getCoefficients(),
+			    "Echec addition avec coefficients décimaux"
+		);
+		assertArrayEquals(
+			    new double[] {7},
+			    new Polynome(new double[] {3})
+			        .addition(new Polynome(new double[] {4})).getCoefficients(),
+			    "Echec addition deux polynômes de degré 0"
+		);
+	}
 }

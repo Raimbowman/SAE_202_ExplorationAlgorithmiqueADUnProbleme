@@ -238,6 +238,29 @@ public class Polynome {
 	}
 	
 	/**
+	 * Addtionne le polynome par un un autre polynome
+	 * @param secondPolynome polynome par lequel additionner le premier polynome
+	 * @return un tableau de coefficients qui correspondent aux coefficients du polynome résultat
+	 */
+	public Polynome addition(Polynome secondPolynome) {
+	    int taillePolynome;
+	    if (coefficients.length > secondPolynome.coefficients.length) {
+	    	taillePolynome = coefficients.length;
+	    } else {
+	    	taillePolynome = secondPolynome.coefficients.length;
+	    }
+	    
+	    double[] somme = new double[taillePolynome];
+	    for (int indiceTab1 = 0; indiceTab1 < coefficients.length; indiceTab1++) {
+	        somme[indiceTab1] += coefficients[indiceTab1];
+	    }
+	    for (int indiceTab2 = 0; indiceTab2 < secondPolynome.coefficients.length; indiceTab2++) {
+	        somme[indiceTab2] += secondPolynome.coefficients[indiceTab2];
+	    }
+	    return new Polynome(somme);
+	}
+	
+	/**
 	 * Multiplie le polynome par un réel
 	 * @param reel nombre par lequel multiplier le polynome
 	 * @return un tableau de coefficients qui correspondent aux coefficients du polynome résultat

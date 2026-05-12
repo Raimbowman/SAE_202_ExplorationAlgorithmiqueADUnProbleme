@@ -203,23 +203,23 @@ class PolynomeTest {
     
     @Test
     void testGetRacines() {
-        assertArrayEquals(new double[] {2},
+    	assertArrayEquals(new double[] {2},
                           new Polynome(new double[] {2}, new int[] {5}, 1).getRacines(),
                           "Echec des racines sur un polynôme avec une unique racine de multiplicité 5");
         assertArrayEquals(new double[] {},
                           new Polynome(new double[] {}, new int[] {}, 5).getRacines(),
                           "Echec sur un polynôme sans racines");
-         assertArrayEquals(new double[] {3.5},
+        assertArrayEquals(new double[] {3.5},
                            new Polynome(new double[] {3.5}, new int[] {2}, 1).getRacines(),
                            "Echec des racines sur un polynôme avec une unique racine double");
-         assertArrayEquals(new double[] {-1, 4.2},
+        assertArrayEquals(new double[] {-1, 4.2},
                            new Polynome(new double[] {-1, 4.2}, new int[] {1, 1}, 2).getRacines(),
                            "Echec des racines sur un polynôme avec deux racines simples");
-         assertArrayEquals(new double[] {-2, -1, 0, 1, 2},
+        assertArrayEquals(new double[] {-2, -1, 0, 1, 2},
                            new Polynome(new double[] {-2, -1, 0, 1, 2}, 
                                         new int[] {1, 1, 1, 1, 1}, 1).getRacines(),
                            "Echec des racines sur un polynôme avec cinq racines simples");
-         assertArrayEquals(new double[] {2.3, -3, 1, -1, 4.2},
+        assertArrayEquals(new double[] {2.3, -3, 1, -1, 4.2},
                           new Polynome(new double[] {2.3, -3, 1, -1, 4.2}, 
                                        new int[] {1, 1, 1, 2, 2}, 4).getRacines(),
                           "Echec des racines sur un polynôme avec cinq racines simples et doubles");
@@ -227,18 +227,18 @@ class PolynomeTest {
                           new Polynome(new double[] {-2, -1, 0, 1, 2}, 
                                        new int[] {3, 3, 3, 3, 3}, 1).getRacines(),
                           "Echec des racines sur un polynôme avec cinq racines triples");
- 
-         assertThrows(UnsupportedOperationException.class,
+        assertThrows(UnsupportedOperationException.class,
                       () -> new Polynome(new double[] {1, 2, 3}).getRacines(),
                       "Echec de la levée d'exception sur un polynôme construit par coefficients");
     }
     
     @Test
     void testMultiplication() {
-        assertArrayEquals(new double[] {6, 12, 15},
-                          new Polynome(new double[] {2, 4, 5}).multiplication(3).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un réel entier positif");
+    	//TODO changer tous les tests en prenant comme modèle le premier qui est déjà modifié
+        assertEquals(new Polynome(new double[] {6, 12, 15}),
+                     new Polynome(new double[] {2, 4, 5}).multiplication(3),
+                     "Echec des coefficients sur un polynôme de degré 2 "
+                     + "multiplié par un réel entier positif");
         assertArrayEquals(new double[] {10, 20, 25},
                           new Polynome(new double[] {4, 8, 10}).multiplication(2.5).getCoefficients(),
                           "Echec des coefficients sur un polynôme de degré 2 "

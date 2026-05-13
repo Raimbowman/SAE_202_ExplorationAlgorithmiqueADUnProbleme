@@ -242,7 +242,7 @@ public class Polynome {
         for (int indiceTab2 = 0; indiceTab2 < secondPolynome.coefficients.length; indiceTab2++) {
             somme[indiceTab2] += secondPolynome.coefficients[indiceTab2];
         }
-        return new Polynome(somme);
+        return new Polynome(tronquer(somme));
     }
     
     /**
@@ -281,8 +281,7 @@ public class Polynome {
                 produit[indiceTab1 + indiceTab2] += coefficients[indiceTab1] * secondPolynome.coefficients[indiceTab2];
             }
         }
-        Polynome polynomeResultat = new Polynome(produit);
-        return polynomeResultat;
+        return new Polynome(tronquer(produit));
     }
     
     /**
@@ -318,6 +317,26 @@ public class Polynome {
 			polynomeReste = polynomeReste.soustraction(temp.multiplication(polynomeDiviseur));
 		}
 		return new Polynome[] {polynomeQuotient, polynomeReste};
+    }
+    
+    /**
+     * Tronque les zéros inutiles en tête du tableau de coefficients
+     * (les zéros de plus haut degré), tout en conservant le polynôme nul [0]
+     * 
+     * @param aTronquer tableau de coefficients à tronquer
+     * @return tableau tronqué sans les zéros inutiles de plus haut degré
+     */
+    private static double[] tronquer(double[] aTronquer) {
+        int nouvelleTaille = aTronquer.length;
+        while (nouvelleTaille > 1 && aTronquer[nouvelleTaille - 1] == 0) {
+            nouvelleTaille--;
+        }
+        if (nouvelleTaille == aTronquer.length) {
+            return aTronquer;
+        }
+        double[] resultat = new double[nouvelleTaille];
+        System.arraycopy(aTronquer, 0, resultat, 0, nouvelleTaille);
+        return resultat;
     }
     
     

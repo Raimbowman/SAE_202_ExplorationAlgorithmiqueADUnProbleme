@@ -290,9 +290,34 @@ public class Polynome {
      * @param polynomeDiviseur polynome par lequel diviser le premier polynome
      * @return un tableau de 2 polynomes : le premier correspond au quotient
      *         de la division, le second correspond au reste de la division
+     * @throws IllegalArgumentException si le polynome diviseur est nul ou si
+     * 		   un des polynômes a un degré infini (ce qui peut arriver si on
+     *         construit un polynome à partir de ses racines et que l'une
+     *         d'entre elles est infinie)
      */
     public Polynome[] division(Polynome polynomeDiviseur) {
-    	return new Polynome[] {new Polynome(new double[] {}), new Polynome(new double[] {})}; //STUB
+		if (polynomeDiviseur.getDegre() < 0) {
+			throw new IllegalArgumentException("Division par un polynome nul impossible");
+		} else if (!Double.isFinite(this.getDegre()) || !Double.isFinite(polynomeDiviseur.getDegre())) {
+			throw new IllegalArgumentException("Division par un polynome de degré infini impossible");
+		}
+
+		Polynome polynomeQuotient = new Polynome(new double[] { 0 });
+		Polynome polynomeReste = this;
+
+		while (polynomeReste.getDegre() >= polynomeDiviseur.getDegre()) {
+			double coefQuotient = polynomeReste.coefficients[polynomeReste.coefficients.length - 1]
+					/ polynomeDiviseur.coefficients[polynomeDiviseur.coefficients.length - 1];
+			int degreDiff = (int)(polynomeReste.getDegre() - polynomeDiviseur.getDegre());
+
+			double[] coeffTemp = new double[degreDiff + 1];
+			coeffTemp[degreDiff] = coefQuotient;
+			Polynome temp = new Polynome(coeffTemp);
+
+			polynomeQuotient = polynomeQuotient.addition(temp);
+			polynomeReste = polynomeReste.soustraction(temp.multiplication(polynomeDiviseur));
+		}
+		return new Polynome[] {polynomeQuotient, polynomeReste};
     }
     
     

@@ -285,6 +285,16 @@ public class Polynome {
         return polynomeResultat;
     }
     
+    /**
+     * Divise le polynome par un un autre polynome en paramètre
+     * @param polynomeDiviseur polynome par lequel diviser le premier polynome
+     * @return un tableau de 2 polynomes : le premier correspond au quotient
+     *         de la division, le second correspond au reste de la division
+     */
+    public Polynome[] division(Polynome polynomeDiviseur) {
+    	return new Polynome[] {new Polynome(new double[] {}), new Polynome(new double[] {})}; //STUB
+    }
+    
     
     
     /**

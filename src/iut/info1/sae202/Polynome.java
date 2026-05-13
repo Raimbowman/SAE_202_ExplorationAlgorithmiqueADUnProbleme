@@ -147,7 +147,6 @@ public class Polynome {
         if (numeroConstructeur == 1) {
             return coefficients;
         } else {
-            // TODO compléter la fonction pour résoudre les tests en échec du constructeur 2
             double[] resultat = new double[] { 1 };
             for (int indiceRacines = 0; indiceRacines < racines.length; indiceRacines++) {
                 for (int valeurOrdreMultiplicite = 0; valeurOrdreMultiplicite < ordresMultiplicite[indiceRacines]; valeurOrdreMultiplicite++) {
@@ -285,4 +284,34 @@ public class Polynome {
         Polynome polynomeResultat = new Polynome(produit);
         return polynomeResultat;
     }
+    
+    
+    
+    /**
+     * Vérifie si le polynome est égal à un autre polynome en paramètre
+     * en comparant les coefficients de chacun des polynomes
+     * Permet de remplacer les assertArrayEquals dans les tests par
+     * des assertEquals qui appellent automatiquement cette méthode
+     * @return true si les polynomes sont égaux, false sinon
+     */
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj == null || !(obj instanceof Polynome)) {
+	        return false;
+	    }
+	    Polynome aComparer = (Polynome) obj;
+	
+	    // Vérifier que les deux polynômes ont le même nombre de coefficients
+	    if (this.coefficients.length != aComparer.coefficients.length) {
+	        return false;
+	    }
+	
+	    // Comparer chaque coefficient avec une petite tolérance pour les décimaux
+	    for (int i = 0; i < this.coefficients.length; i++) {
+	        if (Math.abs(this.coefficients[i] - aComparer.coefficients[i]) > 1e-9) {
+	            return false;
+	        }
+	    }
+	    return true;
+	}
 }

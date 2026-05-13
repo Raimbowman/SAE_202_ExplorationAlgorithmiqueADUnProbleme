@@ -363,67 +363,6 @@ class PolynomeTest {
 	                 "Echec des racines sur un polynôme de degré 4 "
 	                 + "multiplié par un polynôme de degré 0 décimal négatif");
   }
-	
-	void testDivision() {
-		assertArrayEquals(new double[] {2, 3},
-						new Polynome(new double[] {6, 11, 6, 1}).division(new Polynome(new double[] {3, 1}))
-							.getCoefficients(),
-							"Echec des coefficients sur un polynôme de degré 3 "
-							+ "divisé par un polynôme de degré 1 entier positif");
-		assertArrayEquals(new double[] {2, 3, 1},
-						new Polynome(new double[] {4, 12, 13, 6, 1}).division(new Polynome(new double[] {2, 3, 1}))
-							.getCoefficients(),
-							"Echec des coefficients sur un polynôme de degré 4 "
-							+ "divisé par un polynôme de degré 2 entier positif");
-		assertArrayEquals(new double[] {2.0, 3.0, 1.0},
-						new Polynome(new double[] {5.0, 10.5, 7, 1.5}).division(new Polynome(new double[] {2.5, 1.5}))
-							.getCoefficients(), 1e-9,
-							"Echec des coefficients sur un polynôme de degré 3 "
-							+ "divisé par un polynôme de degré 1 décimal positif");
-		assertArrayEquals(new double[] {-2, 1},
-						new Polynome(new double[] {-6, 7, -2}).division(new Polynome(new double[] {3, -2}))
-							.getCoefficients(), 1e-9,
-							"Echec des coefficients sur un polynôme de degré 2 "
-							+ "divisé par un polynôme de degré 1 entier négatif");
-		assertArrayEquals(new double[] {-2.0, 3.0, 1.0},
-						new Polynome(new double[] {-7.0, 13.5, -1.0, -1.5}).division(new Polynome(new double[] {3.5, -1.5}))
-							.getCoefficients(), 1e-9,
-							"Echec des coefficients sur un polynôme de degré 3 "
-							+ "divisé par un polynôme de degré 1 décimal négatif");
-		assertArrayEquals(new double[] {2, 4, 5},
-					    new Polynome(new double[] {6, 12, 15}).division(new Polynome(new double[] {3}))
-					      	.getCoefficients(), 1e-9,
-					    	"Echec des coefficients sur un polynôme de degré 2 "
-					    	+ "divisé par une constante entière positive");
-		assertArrayEquals(new double[] {2, 3},
-					    new Polynome(new double[] {5, 7.5}).division(new Polynome(new double[] {2.5}))
-					      	.getCoefficients(), 1e-9,
-					    	"Echec des coefficients sur un polynôme de degré 1 "
-					    	+ "divisé par une constante décimale positive");
-		assertArrayEquals(new double[] {-2, -3, -1},
-					    new Polynome(new double[] {6, 9, 3}).division(new Polynome(new double[] {-3}))
-					      	.getCoefficients(), 1e-9,
-					    	"Echec des coefficients sur un polynôme de degré 2 "
-					    	+ "divisé par une constante entière négative");
-		assertArrayEquals(new double[] {-1.6},
-					    new Polynome(new double[] {-8}).division(new Polynome(new double[] {5}))
-					      	.getCoefficients(), 1e-9,
-					    	"Echec des coefficients sur un polynôme de degré 0 "
-					    	+ "divisé par une constante entière positive");
-		assertArrayEquals(new double[] {1},
-						new Polynome(new double[] {2, 4, 5}).division(new Polynome(new double[] {2, 4, 5}))
-						    .getCoefficients(), 1e-9,
-							"Echec des coefficients sur un polynôme divisé par lui-même");
-		assertArrayEquals(new double[] {1},
-						new Polynome(new double[] {6, 11, 6, 1}).division(new Polynome(new double[] {6, 11, 6, 1}))
-						    .getCoefficients(), 1e-9,
-							"Echec des coefficients sur un polynôme de degré 3 divisé par lui-même");
-		assertArrayEquals(new double[] {1},
-						new Polynome(new double[] {3}).division(new Polynome(new double[] {3}))
-						    .getCoefficients(), 1e-9,
-						    "Echec des coefficients sur une constante divisée par elle-même");
-	}	
-
     
     @Test
     void testToString() {

@@ -232,137 +232,138 @@ class PolynomeTest {
                       "Echec de la levée d'exception sur un polynôme construit par coefficients");
     }
     
-    @Test
-    void testMultiplication() {
-    	//TODO changer tous les tests en prenant comme modèle le premier qui est déjà modifié
-        assertEquals(new Polynome(new double[] {6, 12, 15}),
-                     new Polynome(new double[] {2, 4, 5}).multiplication(3),
-                     "Echec des coefficients sur un polynôme de degré 2 "
-                     + "multiplié par un réel entier positif");
-        assertArrayEquals(new double[] {10, 20, 25},
-                          new Polynome(new double[] {4, 8, 10}).multiplication(2.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un réel décimal positif");
-        assertArrayEquals(new double[] {10},
-                          new Polynome(new double[] {5}).multiplication(2).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel entier positif");
-        assertArrayEquals(new double[] {-14},
-                          new Polynome(new double[] {-4}).multiplication(3.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel décimal positif");
-        assertArrayEquals(new double[] {-4, -8, -10, -12, -4},
-                          new Polynome(new double[] {2, 4, 5, 6, 2}).multiplication(-2).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 4 "
-                          + "multiplié par un réel entier négatif");
-        assertArrayEquals(new double[] {-7, -14, -17.5},
-                          new Polynome(new double[] {2, 4, 5}).multiplication(-3.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un réel décimal négatif");
-        assertArrayEquals(new double[] {-24},
-                          new Polynome(new double[] {6}).multiplication(-4).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel entier négatif");
-        assertArrayEquals(new double[] {10.5},
-                          new Polynome(new double[] {-3}).multiplication(-3.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel décimal négatif");
-        
-        assertArrayEquals(new double[] {48, -40, 8},
-                          new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(4).getCoefficients(),
-                          "Echec des racines sur un polynôme de degré 2 "
-                          + "multiplié par un réel entier positif");
-        assertArrayEquals(new double[] {90, -52.5, 7.5},
-                          new Polynome(new double[] {4, 3}, new int[] {1, 1}, 3).multiplication(2.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un réel décimal positif");
-        assertArrayEquals(new double[] {6},
-                          new Polynome(new double[] {}, new int[] {}, 3).multiplication(2).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel entier positif");
-        assertArrayEquals(new double[] {-17.5},
-                          new Polynome(new double[] {}, new int[] {}, -5).multiplication(3.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel décimal positif");
-        assertArrayEquals(new double[] {80, -20, -10},
-                          new Polynome(new double[] {2, -4}, new int[] {1, 1}, 5).multiplication(-2).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un réel entier négatif");
-        assertArrayEquals(new double[] {-42, -49, 21, 21, -7},
-                          new Polynome(new double[] {-1, 2, 3}, new int[] {2, 1, 1}, 2).multiplication(-3.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 4 "
-                          + "multiplié par un réel décimal négatif");
-        assertArrayEquals(new double[] {-24},
-                          new Polynome(new double[] {}, new int[] {}, 6).multiplication(-4).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel entier négatif");
-        assertArrayEquals(new double[] {-14},
-                          new Polynome(new double[] {}, new int[] {}, 4).multiplication(-3.5).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un réel décimal négatif");
-        
-        assertArrayEquals(new double[] {6},
-                          new Polynome(new double[] {2}).multiplication(new Polynome(new double[] {3})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un polynôme de degré 0");
-        assertArrayEquals(new double[] {6, 9},
-                          new Polynome(new double[] {2, 3}).multiplication(new Polynome(new double[] {3})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 1 "
-                          + "multiplié par un polynôme de degré 0");
-        assertArrayEquals(new double[] {6, 9},
-                          new Polynome(new double[] {3}).multiplication(new Polynome(new double[] {2, 3})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 0 "
-                          + "multiplié par un polynôme de degré 1");
-        assertArrayEquals(new double[] {6, 11, 6, 1},
-                          new Polynome(new double[] {2, 3, 1}).multiplication(new Polynome(new double[] {3, 1})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un polynôme de degré 1 entier positif");
-        assertArrayEquals(new double[] {4, 12, 13, 6, 1},
-                          new Polynome(new double[] {2, 3, 1}).multiplication(new Polynome(new double[] {2, 3, 1})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un polynôme de degré 2 entier positif");
-        assertArrayEquals(new double[] {5.0, 10.5, 7, 1.5},
-                          new Polynome(new double[] {2.0, 3.0, 1.0}).multiplication(new Polynome(new double[] {2.5, 1.5})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un polynôme de degré 1 décimal positif");
-        assertArrayEquals(new double[] {-6, 7, -2},
-                          new Polynome(new double[] {-2, 1}).multiplication(new Polynome(new double[] {3, -2})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 1 "
-                          + "multiplié par un polynôme de degré 1 entier négatif");
-        assertArrayEquals(new double[] {-7.0, 13.5, -1.0, -1.5},
-                          new Polynome(new double[] {-2.0, 3.0, 1.0}).multiplication(new Polynome(new double[] {3.5, -1.5})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 2 "
-                          + "multiplié par un polynôme de degré 1 décimal négatif");
-        assertArrayEquals(new double[] {2, 7, 9, 7, 6, 4, 1},
-                          new Polynome(new double[] {2, 3, 1, 2, 1}).multiplication(new Polynome(new double[] {1, 2, 1})).getCoefficients(),
-                          "Echec des coefficients sur un polynôme de degré 4 "
-                          + "multiplié par un polynôme de degré 2 entier positif");
-        
-        assertArrayEquals(new double[] {24, -32, 14, -2},
-                          new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(new Polynome(new double[] {2, -1})).getCoefficients(),
-                          "Echec des racines sur un polynôme de degré 2 "
-                          + "multiplié par un polynôme de degré 1 entier positif");
-        assertArrayEquals(new double[] {144, -240, 148, -40, 4},
-                          new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2)).getCoefficients(),
-                          "Echec des racines sur deux polynômes de degré 2 "
-                          + "multipliés entiers positifs");
-        assertArrayEquals(new double[] {6, 9},
-                          new Polynome(new double[] {}, new int[] {}, 3).multiplication(new Polynome(new double[] {2, 3})).getCoefficients(),
-                          "Echec des racines sur un polynôme de degré 0 "
-                          + "multiplié par un polynôme de degré 1 entier positif");
-        assertArrayEquals(new double[] {-15},
-                          new Polynome(new double[] {}, new int[] {}, -5).multiplication(new Polynome(new double[] {3})).getCoefficients(),
-                          "Echec des racines sur un polynôme de degré 0 "
-                          + "multiplié par un polynôme de degré 0 entier positif");
-        assertArrayEquals(new double[] {-24, 32, -14, 2},
-                          new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(new Polynome(new double[] {-2, 1})).getCoefficients(),
-                          "Echec des racines sur un polynôme de degré 2 "
-                          + "multiplié par un polynôme de degré 1 entier négatif");
-        assertArrayEquals(new double[] {-42.0, -49.0, 21.0, 21.0, -7.0},
-                          new Polynome(new double[] {-1, 2, 3}, new int[] {2, 1, 1}, 2).multiplication(new Polynome(new double[] {-3.5})).getCoefficients(),
-                          "Echec des racines sur un polynôme de degré 4 "
-                          + "multiplié par un polynôme de degré 0 décimal négatif");
-    }
+
+	@Test
+	void testMultiplication() {
+	    assertEquals(new Polynome(new double[] {6, 12, 15}),
+	                 new Polynome(new double[] {2, 4, 5}).multiplication(3),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un réel entier positif");
+	    assertEquals(new Polynome(new double[] {10, 20, 25}),
+	                 new Polynome(new double[] {4, 8, 10}).multiplication(2.5),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un réel décimal positif");
+	    assertEquals(new Polynome(new double[] {10}),
+	                 new Polynome(new double[] {5}).multiplication(2),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel entier positif");
+	    assertEquals(new Polynome(new double[] {-14}),
+	                 new Polynome(new double[] {-4}).multiplication(3.5),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel décimal positif");
+	    assertEquals(new Polynome(new double[] {-4, -8, -10, -12, -4}),
+	                 new Polynome(new double[] {2, 4, 5, 6, 2}).multiplication(-2),
+	                 "Echec des coefficients sur un polynôme de degré 4 "
+	                 + "multiplié par un réel entier négatif");
+	    assertEquals(new Polynome(new double[] {-7, -14, -17.5}),
+	                 new Polynome(new double[] {2, 4, 5}).multiplication(-3.5),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un réel décimal négatif");
+	    assertEquals(new Polynome(new double[] {-24}),
+	                 new Polynome(new double[] {6}).multiplication(-4),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel entier négatif");
+	    assertEquals(new Polynome(new double[] {10.5}),
+	                 new Polynome(new double[] {-3}).multiplication(-3.5),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel décimal négatif");
+	
+	    assertEquals(new Polynome(new double[] {48, -40, 8}),
+	                 new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(4),
+	                 "Echec des racines sur un polynôme de degré 2 "
+	                 + "multiplié par un réel entier positif");
+	    assertEquals(new Polynome(new double[] {90, -52.5, 7.5}),
+	                 new Polynome(new double[] {4, 3}, new int[] {1, 1}, 3).multiplication(2.5),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un réel décimal positif");
+	    assertEquals(new Polynome(new double[] {6}),
+	                 new Polynome(new double[] {}, new int[] {}, 3).multiplication(2),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel entier positif");
+	    assertEquals(new Polynome(new double[] {-17.5}),
+	                 new Polynome(new double[] {}, new int[] {}, -5).multiplication(3.5),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel décimal positif");
+	    assertEquals(new Polynome(new double[] {80, -20, -10}),
+	                 new Polynome(new double[] {2, -4}, new int[] {1, 1}, 5).multiplication(-2),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un réel entier négatif");
+	    assertEquals(new Polynome(new double[] {-42, -49, 21, 21, -7}),
+	                 new Polynome(new double[] {-1, 2, 3}, new int[] {2, 1, 1}, 2).multiplication(-3.5),
+	                 "Echec des coefficients sur un polynôme de degré 4 "
+	                 + "multiplié par un réel décimal négatif");
+	    assertEquals(new Polynome(new double[] {-24}),
+	                 new Polynome(new double[] {}, new int[] {}, 6).multiplication(-4),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel entier négatif");
+	    assertEquals(new Polynome(new double[] {-14}),
+	                 new Polynome(new double[] {}, new int[] {}, 4).multiplication(-3.5),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un réel décimal négatif");
+	
+	    assertEquals(new Polynome(new double[] {6}),
+	                 new Polynome(new double[] {2}).multiplication(new Polynome(new double[] {3})),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un polynôme de degré 0");
+	    assertEquals(new Polynome(new double[] {6, 9}),
+	                 new Polynome(new double[] {2, 3}).multiplication(new Polynome(new double[] {3})),
+	                 "Echec des coefficients sur un polynôme de degré 1 "
+	                 + "multiplié par un polynôme de degré 0");
+	    assertEquals(new Polynome(new double[] {6, 9}),
+	                 new Polynome(new double[] {3}).multiplication(new Polynome(new double[] {2, 3})),
+	                 "Echec des coefficients sur un polynôme de degré 0 "
+	                 + "multiplié par un polynôme de degré 1");
+	    assertEquals(new Polynome(new double[] {6, 11, 6, 1}),
+	                 new Polynome(new double[] {2, 3, 1}).multiplication(new Polynome(new double[] {3, 1})),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un polynôme de degré 1 entier positif");
+	    assertEquals(new Polynome(new double[] {4, 12, 13, 6, 1}),
+	                 new Polynome(new double[] {2, 3, 1}).multiplication(new Polynome(new double[] {2, 3, 1})),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un polynôme de degré 2 entier positif");
+	    assertEquals(new Polynome(new double[] {5.0, 10.5, 7, 1.5}),
+	                 new Polynome(new double[] {2.0, 3.0, 1.0}).multiplication(new Polynome(new double[] {2.5, 1.5})),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un polynôme de degré 1 décimal positif");
+	    assertEquals(new Polynome(new double[] {-6, 7, -2}),
+	                 new Polynome(new double[] {-2, 1}).multiplication(new Polynome(new double[] {3, -2})),
+	                 "Echec des coefficients sur un polynôme de degré 1 "
+	                 + "multiplié par un polynôme de degré 1 entier négatif");
+	    assertEquals(new Polynome(new double[] {-7.0, 13.5, -1.0, -1.5}),
+	                 new Polynome(new double[] {-2.0, 3.0, 1.0}).multiplication(new Polynome(new double[] {3.5, -1.5})),
+	                 "Echec des coefficients sur un polynôme de degré 2 "
+	                 + "multiplié par un polynôme de degré 1 décimal négatif");
+	    assertEquals(new Polynome(new double[] {2, 7, 9, 7, 6, 4, 1}),
+	                 new Polynome(new double[] {2, 3, 1, 2, 1}).multiplication(new Polynome(new double[] {1, 2, 1})),
+	                 "Echec des coefficients sur un polynôme de degré 4 "
+	                 + "multiplié par un polynôme de degré 2 entier positif");
+	
+	    assertEquals(new Polynome(new double[] {24, -32, 14, -2}),
+	                 new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(new Polynome(new double[] {2, -1})),
+	                 "Echec des racines sur un polynôme de degré 2 "
+	                 + "multiplié par un polynôme de degré 1 entier positif");
+	    assertEquals(new Polynome(new double[] {144, -240, 148, -40, 4}),
+	                 new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2)),
+	                 "Echec des racines sur deux polynômes de degré 2 "
+	                 + "multipliés entiers positifs");
+	    assertEquals(new Polynome(new double[] {6, 9}),
+	                 new Polynome(new double[] {}, new int[] {}, 3).multiplication(new Polynome(new double[] {2, 3})),
+	                 "Echec des racines sur un polynôme de degré 0 "
+	                 + "multiplié par un polynôme de degré 1 entier positif");
+	    assertEquals(new Polynome(new double[] {-15}),
+	                 new Polynome(new double[] {}, new int[] {}, -5).multiplication(new Polynome(new double[] {3})),
+	                 "Echec des racines sur un polynôme de degré 0 "
+	                 + "multiplié par un polynôme de degré 0 entier positif");
+	    assertEquals(new Polynome(new double[] {-24, 32, -14, 2}),
+	                 new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2).multiplication(new Polynome(new double[] {-2, 1})),
+	                 "Echec des racines sur un polynôme de degré 2 "
+	                 + "multiplié par un polynôme de degré 1 entier négatif");
+	    assertEquals(new Polynome(new double[] {-42.0, -49.0, 21.0, 21.0, -7.0}),
+	                 new Polynome(new double[] {-1, 2, 3}, new int[] {2, 1, 1}, 2).multiplication(new Polynome(new double[] {-3.5})),
+	                 "Echec des racines sur un polynôme de degré 4 "
+	                 + "multiplié par un polynôme de degré 0 décimal négatif");
+	}
+
     
     @Test
     void testToString() {
@@ -390,144 +391,96 @@ class PolynomeTest {
     
     @Test
     void testAddition() {
-        assertArrayEquals(
-                new double[] {16, -10},
-                new Polynome(new double[] {4, 20})
-                    .addition(new Polynome(new double[] {12, -30})).getCoefficients(),
-                "Echec addition de deux polynômes de degré 1"
-            );
-        assertArrayEquals(
-                new double[] {15, -5, -8},
-                new Polynome(new double[] {2, -10, 4})
-                    .addition(new Polynome(new double[] {13, 5, -12})).getCoefficients(),
-                "Echec addition de deux polynômes de degré 2"
-            );
-        assertArrayEquals(
-            new double[] {-6, -2, -2, 4},
-            new Polynome(new double[] {1, -5, 2, 3})
-                .addition(new Polynome(new double[] {-7, 3, -4, 1})).getCoefficients(),
-            "Echec addition de deux polynômes de degré 3"
-        );
-        assertArrayEquals(
-            new double[] {30, 3, -7, 20, 3},
-            new Polynome(new double[] {32, -1, -10, 5, 3})
-                .addition(new Polynome(new double[] {-2, 4, 3, 15})).getCoefficients(),
-            "Echec addition d'un polynome de degré 4 et d'un polynome de degré 3"
-        );
-        assertArrayEquals(
-                new double[] {-4, 37, -40, -3, 21, 12},
-                new Polynome(new double[] {-11, 31, -54})
-                    .addition(new Polynome(new double[] {7, 6, 14, -3, 21, 12})).getCoefficients(),
-                "Echec addition d'un polynome de degré 2 et d'un polynome de degré 5"
-        );
-        assertArrayEquals(
-                new double[] {6, 2, 3, 4, 5},
-                new Polynome(new double[] {1, 2, 3, 4, 5})
-                    .addition(new Polynome(new double[] {5})).getCoefficients(),
-                "Echec addition polynôme degré 4 et degré 0"
-        );
-        assertArrayEquals(
-            new double[] {-23, 53, -66, 2},
-            new Polynome(new double[] {-11, 31, -54})
-                .addition(new Polynome(new double[] {1, 2, 3},
-                                       new int[] {1, 1, 1},
-                                       2)).getCoefficients(),
-                "Echec addition polynôme degré 2 et polynôme degré 3 constructeur 2"
-        );
-        assertArrayEquals(
-            new double[] {-14, 31, -51},
-            new Polynome(new double[] {-11, 31, -54})
-                .addition(new Polynome(new double[] {-1, 1},
-                                       new int[] {1, 1},
-                                       3)).getCoefficients(),
-                 "Echec addition polynôme degré 2 constructeur 1 et degré 2 constructeur 2"
-        );
-        assertArrayEquals(
-            new double[] {1, 4, 3, 4, 5},
-            new Polynome(new double[] {1, 2, 3, 4, 5})
-                .addition(new Polynome(new double[] {0},
-                                       new int[] {1},
-                                       2)).getCoefficients(),
-                "Echec addition polynôme degré 4 constructeur 1 et degré 1 constructeur 2"
-        );
-        assertArrayEquals(
-                new double[] {0, 0, 1},
-                new Polynome(new double[] {3, 5, 1})
-                    .addition(new Polynome(new double[] {-3, -5})).getCoefficients(),
-                "Echec addition avec coefficients négatifs"
-        );
-        assertArrayEquals(
-                new double[] {3.5, 2.0},
-                new Polynome(new double[] {1.5, 2.0})
-                    .addition(new Polynome(new double[] {2.0})).getCoefficients(),
-                "Echec addition avec coefficients décimaux"
-        );
-        assertArrayEquals(
-                new double[] {7},
-                new Polynome(new double[] {3})
-                    .addition(new Polynome(new double[] {4})).getCoefficients(),
-                "Echec addition deux polynômes de degré 0"
-        );
+        assertEquals(new Polynome(new double[] {16, -10}),
+                     new Polynome(new double[] {4, 20})
+                         .addition(new Polynome(new double[] {12, -30})),
+                     "Echec addition de deux polynômes de degré 1");
+        assertEquals(new Polynome(new double[] {15, -5, -8}),
+                     new Polynome(new double[] {2, -10, 4})
+                         .addition(new Polynome(new double[] {13, 5, -12})),
+                     "Echec addition de deux polynômes de degré 2");
+        assertEquals(new Polynome(new double[] {-6, -2, -2, 4}),
+                     new Polynome(new double[] {1, -5, 2, 3})
+                         .addition(new Polynome(new double[] {-7, 3, -4, 1})),
+                     "Echec addition de deux polynômes de degré 3");
+        assertEquals(new Polynome(new double[] {30, 3, -7, 20, 3}),
+                     new Polynome(new double[] {32, -1, -10, 5, 3})
+                         .addition(new Polynome(new double[] {-2, 4, 3, 15})),
+                     "Echec addition d'un polynome de degré 4 et d'un polynome de degré 3");
+        assertEquals(new Polynome(new double[] {-4, 37, -40, -3, 21, 12}),
+                     new Polynome(new double[] {-11, 31, -54})
+                         .addition(new Polynome(new double[] {7, 6, 14, -3, 21, 12})),
+                     "Echec addition d'un polynome de degré 2 et d'un polynome de degré 5");
+        assertEquals(new Polynome(new double[] {6, 2, 3, 4, 5}),
+                     new Polynome(new double[] {1, 2, 3, 4, 5})
+                         .addition(new Polynome(new double[] {5})),
+                     "Echec addition polynôme degré 4 et degré 0");
+        assertEquals(new Polynome(new double[] {-23, 53, -66, 2}),
+                     new Polynome(new double[] {-11, 31, -54})
+                         .addition(new Polynome(new double[] {1, 2, 3},
+                                                new int[] {1, 1, 1},
+                                                2)),
+                     "Echec addition polynôme degré 2 et polynôme degré 3 constructeur 2");
+        assertEquals(new Polynome(new double[] {-14, 31, -51}),
+                     new Polynome(new double[] {-11, 31, -54})
+                         .addition(new Polynome(new double[] {-1, 1},
+                                                new int[] {1, 1},
+                                                3)),
+                     "Echec addition polynôme degré 2 constructeur 1 et degré 2 constructeur 2");
+        assertEquals(new Polynome(new double[] {1, 4, 3, 4, 5}),
+                     new Polynome(new double[] {1, 2, 3, 4, 5})
+                         .addition(new Polynome(new double[] {0},
+                                                new int[] {1},
+                                                2)),
+                     "Echec addition polynôme degré 4 constructeur 1 et degré 1 constructeur 2");
+        assertEquals(new Polynome(new double[] {0, 0, 1}),
+                     new Polynome(new double[] {3, 5, 1})
+                         .addition(new Polynome(new double[] {-3, -5})),
+                     "Echec addition avec coefficients négatifs");
+        assertEquals(new Polynome(new double[] {3.5, 2.0}),
+                     new Polynome(new double[] {1.5, 2.0})
+                         .addition(new Polynome(new double[] {2.0})),
+                     "Echec addition avec coefficients décimaux");
+        assertEquals(new Polynome(new double[] {7}),
+                     new Polynome(new double[] {3})
+                         .addition(new Polynome(new double[] {4})),
+                     "Echec addition deux polynômes de degré 0");
     }
     
 
-	@Test
-	void testSoustraction() {
-	    // Deux polynômes de même degré
-	    assertArrayEquals(
-	        new double[] {2, 10},
-	        new Polynome(new double[] {4, 20})
-	            .soustraction(new Polynome(new double[] {2, 10})).getCoefficients(),
-	        "Echec soustraction de deux polynômes de degré 1"
-	    );
-	    // Deux polynômes de degré 2
-	    assertArrayEquals(
-	        new double[] {-11, -15, 16},
-	        new Polynome(new double[] {2, -10, 4})
-	            .soustraction(new Polynome(new double[] {13, 5, -12})).getCoefficients(),
-	        "Echec soustraction de deux polynômes de degré 2"
-	    );
-	    // Polynômes de degrés différents
-	    assertArrayEquals(
-	        new double[] {25, -5, -13, -10, 3},
-	        new Polynome(new double[] {32, -1, -10, 5, 3})
-	            .soustraction(new Polynome(new double[] {7, 4, 3, 15})).getCoefficients(),
-	        "Echec soustraction d'un polynôme de degré 4 et d'un polynôme de degré 3"
-	    );
-	    // Soustraction avec coefficients négatifs
-	    assertArrayEquals(
-	        new double[] {6, -10, 1},
-	        new Polynome(new double[] {3, 5, 1})
-	            .soustraction(new Polynome(new double[] {-3, 15})).getCoefficients(),
-	        "Echec soustraction avec coefficients négatifs"
-	    );
-	    // Soustraction avec coefficients décimaux
-	    assertArrayEquals(
-	        new double[] {-0.5, 2.0},
-	        new Polynome(new double[] {1.5, 2.0})
-	            .soustraction(new Polynome(new double[] {2.0})).getCoefficients(),
-	        "Echec soustraction avec coefficients décimaux"
-	    );
-	    // Soustraction de deux polynômes de degré 0
-	    assertArrayEquals(
-	        new double[] {-1},
-	        new Polynome(new double[] {3})
-	            .soustraction(new Polynome(new double[] {4})).getCoefficients(),
-	        "Echec soustraction deux polynômes de degré 0"
-	    );
-	    // Soustraction d'un polynôme par lui-même (résultat nul)
-	    assertArrayEquals(
-	        new double[] {0},
-	        new Polynome(new double[] {5})
-	            .soustraction(new Polynome(new double[] {5})).getCoefficients(),
-	        "Echec soustraction d'un polynôme par lui-même"
-	    );
-	    // Soustraction d'un polynôme de degré 4 et d'un polynôme de degré 0
-	    assertArrayEquals(
-	        new double[] {-4, 2, 3, 4, 5},
-	        new Polynome(new double[] {1, 2, 3, 4, 5})
-	            .soustraction(new Polynome(new double[] {5})).getCoefficients(),
-	        "Echec soustraction polynôme degré 4 et degré 0"
-	    );
-	}
+    @Test
+    void testSoustraction() {
+        assertEquals(new Polynome(new double[] {2, 10}),
+                     new Polynome(new double[] {4, 20})
+                         .soustraction(new Polynome(new double[] {2, 10})),
+                     "Echec soustraction de deux polynômes de degré 1");
+        assertEquals(new Polynome(new double[] {-11, -15, 16}),
+                     new Polynome(new double[] {2, -10, 4})
+                         .soustraction(new Polynome(new double[] {13, 5, -12})),
+                     "Echec soustraction de deux polynômes de degré 2");
+        assertEquals(new Polynome(new double[] {25, -5, -13, -10, 3}),
+                     new Polynome(new double[] {32, -1, -10, 5, 3})
+                         .soustraction(new Polynome(new double[] {7, 4, 3, 15})),
+                     "Echec soustraction d'un polynôme de degré 4 et d'un polynôme de degré 3");
+        assertEquals(new Polynome(new double[] {6, -10, 1}),
+                     new Polynome(new double[] {3, 5, 1})
+                         .soustraction(new Polynome(new double[] {-3, 15})),
+                     "Echec soustraction avec coefficients négatifs");
+        assertEquals(new Polynome(new double[] {-0.5, 2.0}),
+                     new Polynome(new double[] {1.5, 2.0})
+                         .soustraction(new Polynome(new double[] {2.0})),
+                     "Echec soustraction avec coefficients décimaux");
+        assertEquals(new Polynome(new double[] {-1}),
+                     new Polynome(new double[] {3})
+                         .soustraction(new Polynome(new double[] {4})),
+                     "Echec soustraction deux polynômes de degré 0");
+        assertEquals(new Polynome(new double[] {0}),
+                     new Polynome(new double[] {5})
+                         .soustraction(new Polynome(new double[] {5})),
+                     "Echec soustraction d'un polynôme par lui-même");
+        assertEquals(new Polynome(new double[] {-4, 2, 3, 4, 5}),
+                     new Polynome(new double[] {1, 2, 3, 4, 5})
+                         .soustraction(new Polynome(new double[] {5})),
+                     "Echec soustraction polynôme degré 4 et degré 0");
+    }
 }

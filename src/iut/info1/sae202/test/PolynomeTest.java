@@ -6,7 +6,16 @@ import org.junit.jupiter.api.Test;
 import iut.info1.sae202.Polynome;
 
 class PolynomeTest {
-
+	
+	/**
+	 * Tests de validation du constructeur Polynome par les coefficients
+	 * Ces tests couvrent les cas valides de construction de polynômes à partir de coefficients, incluant :
+	 * - des polynômes classiques,
+	 * - des constantes,
+	 * - des polynômes avec des coefficients nuls,
+	 * - des polynômes avec des valeurs décimales
+	 * - des polynômes avec un nombre important de coefficients
+	 */
     @Test
     void testPolynomeCoefficientsValides() {
         assertDoesNotThrow(() -> new Polynome(new double[] {-2, 4, 3}));            //polynome classique (3 coefficients)
@@ -23,6 +32,13 @@ class PolynomeTest {
                                                             1.7}));                //polynome avec valeurs décimales (15 coefficients)
     }
     
+    /**
+     * Tests d'invalidation du constructeur de Polynom par les coefficients
+     * Ces tests couvrent les cas invalides suivants : 
+     * - tableau de coefficients null ou vide,
+     * - coefficients nuls de plus haut degré,
+     * - coefficients NaN ou infinis 
+     */
     @Test
     void testPolynomeCoefficientsInvalides() {
         assertThrows(IllegalArgumentException.class,
@@ -45,6 +61,13 @@ class PolynomeTest {
                  "Coefficient -infini accepté");
     }
     
+    /**
+     * Tests de validation du constructeur de Polynome par les racines
+     * Ces tests couvrent les cas valides suivants :
+     * - polynômes avec des racines simples,
+     * - polynômes avec des racines multiples (double, triple),
+     * - polynômes avec des racines distinctes et des racines multiples
+     */
     @Test
     void testPolynomeRacinesValides() {
         assertDoesNotThrow(() -> new Polynome(new double[] {3, -1},
@@ -59,6 +82,17 @@ class PolynomeTest {
                                               new int[] {2, 1}, 2));        //Multiplicités mixtes
     }
     
+    
+    /**
+     * Tests d'invalidation du constructeur de Polynome par les racines
+     * Ces tests couvrent les cas invalides suivants :
+     * - tableau de racines null,
+     * - tableau de racines contenant des NaN ou des infinis,
+     * - tableau d'ordre de multiplicité null,
+     * - tableau d'ordre de multiplicité contenant des 0 ou des valeurs négatives,
+     * - tableaux de racines et d'ordre de multiplicité de longueur différente,
+     * - coefficient du plus haut monôme nul, NaN ou infini
+     */
     @Test
     void testPolynomeRacinesInvalides() {
         assertThrows(IllegalArgumentException.class,
@@ -114,6 +148,14 @@ class PolynomeTest {
                         "Coefficient -infini du plus haut monôme accepté");                    //Coefficient du plus haut monôme -infini
     }
     
+    /**
+     * Tests de validation de la méthode d'accès au degré d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - polynômes de degré 0 (constantes),
+     * - polynômes de degré 1 (droites),
+     * - polynômes de degré 2 (paraboles),
+     * - polynômes de degré 3 (cubiques)
+     */
     @Test
     void testGetDegre() {
         assertEquals(0, new Polynome(new double[] {5}).getDegre(),
@@ -130,6 +172,18 @@ class PolynomeTest {
                       "Echec des racines sur un degré 3");                        //Constructeur racines degré 3
     }
     
+    /**
+     * Tests de validation de la méthode d'accès aux coefficients d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - polynômes de degré 0 (constantes),
+     * - polynômes de degré 1 (droites),
+     * - polynômes de degré 2 (paraboles),
+     * - polynômes de degré 3 (cubiques),
+     * - polynômes avec des coefficients nuls,
+     * - polynômes avec des coefficients décimaux,
+     * - polynômes construits à partir de racines simples,
+     * - polynômes construits à partir de racines (distinctes) multiples
+     */
     @Test
     void testGetCoefficients() {
         assertArrayEquals(new double[] {5},
@@ -161,6 +215,15 @@ class PolynomeTest {
                           + "deux racines simples et un coefficient = 2");
     }
     
+    /**
+     * Tests de validation de la méthode d'accès aux limites d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - polynômes de degré pair avec un coefficient dominant positif,
+     * - polynômes de degré pair avec un coefficient dominant négatif,
+     * - polynômes de degré impair avec un coefficient dominant positif,
+     * - polynômes de degré impair avec un coefficient dominant négatif,
+     * - idem pour le constructeur par les racines
+     */
     @Test
     void testGetLimites() {
         assertArrayEquals(new double[] {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
@@ -201,6 +264,16 @@ class PolynomeTest {
                           "Echec des racines sur une constante négative");
     }
     
+    /**
+     * Tests de validation de la méthode d'accès aux racines d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - polynômes avec une unique racine de multiplicité 5,
+     * - polynômes sans racines,
+     * - polynômes avec une unique racine double,
+     * - polynômes avec deux racines simples,
+     * - polynômes avec cinq racines simples, doubles et/ou triples,
+     * - polynômes construits par les coefficients (levée d'exception)
+     */
     @Test
     void testGetRacines() {
     	assertArrayEquals(new double[] {2},
@@ -232,7 +305,15 @@ class PolynomeTest {
                       "Echec de la levée d'exception sur un polynôme construit par coefficients");
     }
     
-
+    /**
+     * Tests de validation de la méthode de multiplication d'un polynôme
+     * par un réel ou par un autre polynôme
+     * Ces tests couvrent les cas suivants :
+     * - multiplication par un réel entier/décimal positif/négatif,
+     * - multiplication par un polynôme de degré 0, 1 ou 2
+     * - multiplication de deux polynômes de degré 2,
+     * - multiplication de deux polynômes de degré 4 (polynômes avec des racines multiples)
+     */
 	@Test
 	void testMultiplication() {
 	    assertEquals(new Polynome(new double[] {6, 12, 15}),
@@ -364,6 +445,14 @@ class PolynomeTest {
 	                 + "multiplié par un polynôme de degré 0 décimal négatif");
   }
     
+	/**
+	 * Tests de validation de la méthode d'accès à la représentation textuelle d'un polynôme
+	 * Ces tests couvrent les cas suivants :
+	 * - polynômes de degré 0, 1, 2, 3 ou 4
+	 * - polynômes avec des coefficients nuls,
+	 * - polynômes avec des coefficients décimaux,
+	 * - polynômes construits à partir de racines (distinctes) multiples
+	 */
     @Test
     void testToString() {
         assertEquals("2.0x^2+5.0x+3.0", new Polynome(new double[] {3, 5, 2}).toString(),
@@ -388,6 +477,15 @@ class PolynomeTest {
                       "Echec des racines 2 (ordre 2), 1 et -1 avec coefficient 1");
     }
     
+    /**
+     * Tests de validation de la méthode d'addition et de soustraction de polynômes
+     * Ces tests couvrent les cas suivants :
+     * - addition de deux polynômes de même degré,
+     * - addition de deux polynômes de degrés différents,
+     * - addition de polynômes construits par les coefficients et par les racines
+     * - addition de polynômes avec des coefficients négatifs et décimaux
+     * - addition de polynômes de degré 0
+     */
     @Test
     void testAddition() {
         assertEquals(new Polynome(new double[] {16, -10}),
@@ -446,7 +544,15 @@ class PolynomeTest {
                      "Echec addition deux polynômes de degré 0");
     }
     
-
+    /**
+     * Tests de validation de la méthode de soustraction de polynômes
+     * Ces tests couvrent les cas suivants :
+     * - soustraction de deux polynômes de même degré,
+     * - soustraction de deux polynômes de degrés différents,
+     * - soustraction de polynômes construits par les coefficients et par les racines
+     * - soustraction de polynômes avec des coefficients négatifs et décimaux
+     * - soustraction de polynômes de degré 0
+     */
     @Test
     void testSoustraction() {
         assertEquals(new Polynome(new double[] {2, 10}),

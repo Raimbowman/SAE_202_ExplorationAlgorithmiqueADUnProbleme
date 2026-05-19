@@ -149,6 +149,60 @@ class PolynomeTest {
     }
     
     /**
+     * Tests de validation du constructeur de Polynome par une chaine de caractères
+     * Ces tests couvrent les cas valides suivants :
+     * - polynômes de degré 0, 1, 2, 3 ou 4
+     * - polynômes avec des coefficients nuls,
+     * - polynômes avec des coefficients décimaux,
+     */
+    @Test
+    void testPolynomeStringValides() {
+		assertDoesNotThrow(() -> new Polynome("2x^2+5x+3")); // polynome classique de degré 2
+		assertDoesNotThrow(() -> new Polynome("7x+5")); // polynome classique de degré 1
+		assertDoesNotThrow(() -> new Polynome("x^4+4x^3-3x^2-5x+2")); // polynome classique de degré 4
+		assertDoesNotThrow(() -> new Polynome("-6")); // constante négative
+		assertDoesNotThrow(() -> new Polynome("2.0x^2+5.0x+3.0")); // valeurs décimales
+    }
+    
+    /**
+     * Tests d'invalidation du constructeur de Polynome par une chaine de caractères
+     * Ces tests couvrent les cas invalides suivants :
+     * - chaine de caractères null ou vide,
+     * - chaine de caractères avec une syntaxe incorrecte (ex : "2x^2++5x", "x^4+4x^3-3x^2-5x+2x^-1", "2.0x^2.5+5.0x+3.0"),
+     * - chaine de caractères avec des coefficients NaN ou infinis (ex : "NaNx^2+5x+3", "2x^2+5x+infini")
+     */
+    @Test
+    void testPolynomeStringInvalides() {
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome((String) null),
+    				 "Chaine de caractères NULL acceptée"); // chaine de caractères null
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome(""),
+    				 "Chaine de caractères vide acceptée"); // chaine de caractères vide
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome("2x^2++5x"),
+    				 "Syntaxe incorrecte n°1 acceptée"); // syntaxe incorrecte (double opérateur)
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome("x^4 + 4x^3 - 3x^2 - 5x + 2x^-1"),
+    				 "Syntaxe incorrecte n°2 acceptée"); // syntaxe incorrecte (puissance négative)
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome("2.0x^2.5+5.0x+3.0"),
+    				 "Syntaxe incorrecte n°3 acceptée"); // syntaxe incorrecte (puissance décimale)
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome("NaNx^2+5x+3"),
+    				 "Coefficient NaN accepté"); // coefficient NaN
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome("2x^2 + 5x + infini"),
+    				 "Coefficient infini accepté"); // coefficient +infini
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome("2x^2+5x-infini"),
+    				 "Coefficient -infini accepté"); // coefficient -infini
+    	assertThrows(IllegalArgumentException.class,
+    				 () -> new Polynome("2x^NaN+5x+5"),
+    				 "Coefficient NaN accepté"); // puissance NaN
+    }
+    
+    /**
      * Tests de validation de la méthode d'accès au degré d'un polynôme
      * Ces tests couvrent les cas suivants :
      * - polynômes de degré 0 (constantes),
@@ -455,24 +509,24 @@ class PolynomeTest {
 	 */
     @Test
     void testToString() {
-        assertEquals("2.0x^2+5.0x+3.0", new Polynome(new double[] {3, 5, 2}).toString(),
+        assertEquals("2.0x^2 + 5.0x + 3.0", new Polynome(new double[] {3, 5, 2}).toString(),
                      "Echec des coefficients 3, 5 et 2");
-        assertEquals("7.0x+5.0", new Polynome(new double[] {5, 7}).toString(),
+        assertEquals("7.0x + 5.0", new Polynome(new double[] {5, 7}).toString(),
                  "Echec des coefficients 5 et 7");
-        assertEquals("x^4+4.0x^3-3.0x^2-5.0x+2.0", new Polynome(new double[] {2, -5, -3, 4, 1}).toString(),
+        assertEquals("x^4 + 4.0x^3 - 3.0x^2 - 5.0x + 2.0", new Polynome(new double[] {2, -5, -3, 4, 1}).toString(),
                  "Echec des coefficients 2, -5, -3, 4 et 1");
-        assertEquals("-6.0", new Polynome(new double[] {-6}).toString(),
+        assertEquals(" - 6.0", new Polynome(new double[] {-6}).toString(),
                  "Echec du coefficient 6");
-        assertEquals("2.0x^2+5.0x+3.0",
+        assertEquals("2.0x^2 + 5.0x + 3.0",
                      new Polynome(new double[] {-1, -1.5}, new int[] {1, 1}, 2).toString(),
                      "Echec des racines -1 et -1.5 avec coefficient 2");
-        assertEquals("7.0x+5.0",
+        assertEquals("7.0x + 5.0",
                      new Polynome(new double[] {-5.0/7.0}, new int[] {1}, 7).toString(),
                      "Echec de la racine -5/7 avec coefficient 7");
-        assertEquals("-6.0",
+        assertEquals(" - 6.0",
                      new Polynome(new double[] {}, new int[] {}, -6).toString(),
                      "Echec du coefficient -6");
-        assertEquals("x^4-4.0x^3+3.0x^2+4.0x-4.0",
+        assertEquals("x^4 - 4.0x^3 + 3.0x^2 + 4.0x - 4.0",
                       new Polynome(new double[] {2, 1, -1}, new int[] {2, 1, 1}, 1).toString(),
                       "Echec des racines 2 (ordre 2), 1 et -1 avec coefficient 1");
     }

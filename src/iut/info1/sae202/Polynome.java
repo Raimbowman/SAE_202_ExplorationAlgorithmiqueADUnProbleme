@@ -103,8 +103,103 @@ public class Polynome {
         numeroConstructeur = 2;
         coefficients = this.getCoefficients();
     }
+    
+    /**
+     * Polynôme du degré choisi sous la forme : Kx^n + Kx^n-1 + ... + Kx^0 avec K un
+     * réel quelconque choisi par l'utilisateur, à partir d'une représentation textuelle du polynome
+     * @param representation représentation textuelle d'un polynome, par exemple "3x^2 + 4x - 2"
+     */
+	public Polynome(String representation) {
+		double[] coefficientsExtraits = parseCoefficientsFromString(representation);
+	    if (coefficientsNotValide(coefficientsExtraits)) {
+	        throw new IllegalArgumentException("Représentation invalide");
+	    }
+	    coefficients = coefficientsExtraits;
+	    numeroConstructeur = 1;
+	    plusHautCoefficient = coefficientsExtraits[coefficientsExtraits.length - 1];
+	}
 
     /**
+     * Transforme une représentation textuelle d'un polynome pour en extraire
+     * les coefficients grâce à un REGEX
+	 * @param representation représentation textuelle d'un polynome, par exemple "3x^2 + 4x - 2"
+	 * @return un tableau de coefficients correspondant à la représentation
+	 * 	       textuelle du polynome, dans l'ordre croissant du degré
+	 */
+	private static double[] parseCoefficientsFromString(String representation) {
+		/* Vérifie si la String est nulle */
+		if (representation == null || representation.isBlank()) {
+	        throw new IllegalArgumentException("Représentation invalide");
+		}
+		
+		/* Vérifie si un opérateur est répété 2 fois ou plus d'affilée*/
+	    if (representation.matches(".*[+\\-]{2,}.*")) {
+	        throw new IllegalArgumentException("Représentation invalide");
+	    }
+
+	    String noSpaces = representation.replaceAll("\\s+", "");
+	    if (!noSpaces.matches("([+-]?(?:\\d+\\.?\\d*)?x\\^[0-9]+|[+-]?(?:\\d+\\.?\\d*)?x|[+-]?\\d+\\.?\\d*)+")) {
+	        throw new IllegalArgumentException("Représentation invalide");
+	    }
+
+	    java.util.regex.Matcher matcher = java.util.regex.Pattern
+	        .compile("[+-]?(?:\\d+\\.?\\d*)?x\\^([0-9]+)|[+-]?(?:\\d+\\.?\\d*)?x|[+-]?\\d+\\.?\\d*")
+	        .matcher(noSpaces);
+
+	    /* Trouver le degré maximum */
+	    int maxDegre = 0;
+	    while (matcher.find()) {
+	        String terme = matcher.group();
+	        int degre = 0;
+	        if (terme.contains("x^")) {
+	            degre = Integer.parseInt(terme.split("x\\^")[1]);
+	        } else if (terme.contains("x")) {
+	            degre = 1;
+	        }
+	        if (degre > maxDegre) {
+	        	maxDegre = degre;
+	        }
+	    }
+
+	    /* Remplir le tableau */
+	    double[] coefficients = new double[maxDegre + 1];
+	    matcher.reset();
+	    while (matcher.find()) {
+	        String terme = matcher.group();
+	        int degre;
+	        double coef;
+
+	        if (terme.contains("x^")) {
+	            String[] parts = terme.split("x\\^");
+	            degre = Integer.parseInt(parts[1]);
+	            String coefStr = parts[0];
+	            coef = coefStr.isEmpty() || coefStr.equals("+") ? 1.0
+	                 : coefStr.equals("-") ? -1.0 : Double.parseDouble(coefStr);
+	        } else if (terme.contains("x")) {
+	            degre = 1;
+	            String coefStr = terme.replace("x", "");
+	            coef = coefStr.isEmpty() || coefStr.equals("+") ? 1.0
+	                 : coefStr.equals("-") ? -1.0 : Double.parseDouble(coefStr);
+	        } else {
+	            degre = 0;
+	            coef = Double.parseDouble(terme);
+	        }
+
+	        if (!Double.isFinite(coef)) {
+	            throw new IllegalArgumentException("Représentation invalide");
+	        }
+
+	        coefficients[degre] += coef;
+	    }
+
+	    if (maxDegre > 0 && coefficients[maxDegre] == 0) {
+	        throw new IllegalArgumentException("Représentation invalide");
+	    }
+
+	    return coefficients;
+	}
+
+	/**
      * Vérifie la validité du tableau de coefficients en vérifiant : - un tableau
      * null - un tableau vide - un tableau contenant des 0 inutiles
      * 
@@ -199,9 +294,9 @@ public class Polynome {
             double absCoef = Math.abs(coef);
 
             if (!chaine.isEmpty() && coef > 0) {
-                chaine += "+";
+                chaine += " + ";
             } else if (coef < 0) {
-                chaine += "-";
+                chaine += " - ";
             }
             if (indice == 0) {
                 chaine += absCoef; // Terme constant

@@ -498,6 +498,72 @@ class PolynomeTest {
 	                 "Echec des racines sur un polynôme de degré 4 "
 	                 + "multiplié par un polynôme de degré 0 décimal négatif");
   }
+	
+	/**
+     * Tests de validation de la méthode de division euclidienne d'un polynôme
+     * par un autre polynôme. Ces tests couvrent les cas suivants :
+     * - division par une constante entière/décimale positive/négative,
+     * - division d'un polynôme par lui-même (quotient = 1, reste = 0),
+     * - division exacte (reste nul) de polynômes de degré 0, 1, 2 et 3,
+     * - division avec reste non nul, vérification du quotient ET du reste,
+     * - division par un polynôme de degré supérieur (quotient = 0, reste = dividende),
+     * - division de polynômes construits par les racines,
+     * - cas invalides levant une IllegalArgumentException
+     */
+	@Test
+	void testDivision() {
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {2, 4, 5}), new Polynome(new double[] {0})},
+	                	  new Polynome(new double[] {6, 12, 15}).division(new Polynome(new double[] {3})),
+	                      "Echec des coefficients sur un polynôme de degré 2 "
+	                      + "divisé par une constante entière positive");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {2, 3}), new Polynome(new double[] {0})},
+	                      new Polynome(new double[] {5, 7.5}).division(new Polynome(new double[] {2.5})),
+	                      "Echec des coefficients sur un polynôme de degré 1 "
+	                      + "divisé par une constante décimale positive");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {-2, -3, -1}), new Polynome(new double[] {0})},
+	                      new Polynome(new double[] {6, 9, 3}).division(new Polynome(new double[] {-3})),
+	                      "Echec des coefficients sur un polynôme de degré 2 "
+	                      + "divisé par une constante entière négative");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {-1.6}), new Polynome(new double[] {0})},
+	                      new Polynome(new double[] {-8}).division(new Polynome(new double[] {5})),
+	                      "Echec des coefficients sur un polynôme de degré 0 "
+	                      + "divisé par une constante entière positive");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {1}), new Polynome(new double[] {0})},
+	                	  new Polynome(new double[] {2, 4, 5}).division(new Polynome(new double[] {2, 4, 5})),
+	                	  "Echec des coefficients sur un polynôme divisé par lui-même");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {1}), new Polynome(new double[] {0})},
+	                	  new Polynome(new double[] {6, 11, 6, 1}).division(new Polynome(new double[] {6, 11, 6, 1})),
+	                	  "Echec des coefficients sur un polynôme de degré 3 divisé par lui-même");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {1}), new Polynome(new double[] {0})},
+	                	  new Polynome(new double[] {3}).division(new Polynome(new double[] {3})),
+	                	  "Echec des coefficients sur une constante divisée par elle-même");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {3, 1}), new Polynome(new double[] {0})},
+	                	  new Polynome(new double[] {6, 5, 1}).division(new Polynome(new double[] {2, 1})),
+	                	  "Echec des coefficients sur un polynôme de degré 2 "
+	                	  + "divisé par un polynôme de degré 1 sans reste");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {3, 1}), new Polynome(new double[] {0})},
+	                	  new Polynome(new double[] {6, 11, 6, 1}).division(new Polynome(new double[] {2, 3, 1})),
+	                	  "Echec des coefficients sur un polynôme de degré 3 "
+	                	  + "divisé par un polynôme de degré 2 sans reste");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {1, 1}), new Polynome(new double[] {-1})},
+	                	  new Polynome(new double[] {1, 3, 1}).division(new Polynome(new double[] {2, 1})),
+	                	  "Echec des coefficients sur un polynôme de degré 2 "
+	                	  + "divisé par un polynôme de degré 1 avec reste");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {3, 2}), new Polynome(new double[] {2, -1})},
+	                	  new Polynome(new double[] {5, 1, 3, 2}).division(new Polynome(new double[] {1, 0, 1})),
+	                	  "Echec des coefficients sur un polynôme de degré 3 "
+	                	  + "divisé par un polynôme de degré 2 avec reste");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {0}), new Polynome(new double[] {1, 1})},
+	                	  new Polynome(new double[] {1, 1}).division(new Polynome(new double[] {1, 0, 1})),
+	                	  "Echec des coefficients quand le diviseur est de degré supérieur");
+	    assertArrayEquals(new Polynome[] {new Polynome(new double[] {-3, 1}), new Polynome(new double[] {0})},
+	                	  new Polynome(new double[] {2, 3}, new int[] {1, 1}, 1).division(new Polynome(new double[] {-2, 1})),
+	                	  "Echec des racines sur un polynôme de degré 2 "
+	                	  + "divisé par un de ses facteurs");
+	    assertThrows(IllegalArgumentException.class,
+	                  () -> new Polynome(new double[] {1, 2, 3}).division(new Polynome(new double[] {0})),
+	                  "Division par le polynôme nul aurait dû lever une IllegalArgumentException");
+	}
     
 	/**
 	 * Tests de validation de la méthode d'accès à la représentation textuelle d'un polynôme

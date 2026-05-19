@@ -512,11 +512,13 @@ class PolynomeTest {
         assertEquals("2.0x^2 + 5.0x + 3.0", new Polynome(new double[] {3, 5, 2}).toString(),
                      "Echec des coefficients 3, 5 et 2");
         assertEquals("7.0x + 5.0", new Polynome(new double[] {5, 7}).toString(),
-                 "Echec des coefficients 5 et 7");
+                     "Echec des coefficients 5 et 7");
         assertEquals("x^4 + 4.0x^3 - 3.0x^2 - 5.0x + 2.0", new Polynome(new double[] {2, -5, -3, 4, 1}).toString(),
-                 "Echec des coefficients 2, -5, -3, 4 et 1");
+                     "Echec des coefficients 2, -5, -3, 4 et 1");
+        assertEquals("x^4 + 2.0", new Polynome(new double[] {2, 0, 0, 0, 1}).toString(),
+                     "Echec des coefficients 2, 0, 0, 0 et 1");
         assertEquals(" - 6.0", new Polynome(new double[] {-6}).toString(),
-                 "Echec du coefficient 6");
+                     "Echec du coefficient 6");
         assertEquals("2.0x^2 + 5.0x + 3.0",
                      new Polynome(new double[] {-1, -1.5}, new int[] {1, 1}, 2).toString(),
                      "Echec des racines -1 et -1.5 avec coefficient 2");

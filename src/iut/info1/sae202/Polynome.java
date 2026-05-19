@@ -288,10 +288,11 @@ public class Polynome {
     /** @see java.lang.Object#toString() */
     public String toString() {
         String chaine = "";
-
         for (int indice = coefficients.length - 1; indice >= 0; indice--) {
             double coef = coefficients[indice];
             double absCoef = Math.abs(coef);
+
+            if (coef == 0) continue; // Ignore les termes nuls
 
             if (!chaine.isEmpty() && coef > 0) {
                 chaine += " + ";
@@ -299,20 +300,16 @@ public class Polynome {
                 chaine += " - ";
             }
             if (indice == 0) {
-                chaine += absCoef; // Terme constant
+                chaine += absCoef;
             } else if (indice == 1) {
-                if (absCoef != 1)
-                    chaine += absCoef; // Terme en x
+                if (absCoef != 1) chaine += absCoef;
                 chaine += "x";
-            } else { // Terme en x^n
-                if (absCoef != 1) {
-                    chaine += absCoef;
-                }
+            } else {
+                if (absCoef != 1) chaine += absCoef;
                 chaine += "x^" + indice;
             }
         }
-
-        return chaine.isEmpty() ? "0" : chaine; // Polynôme nul
+        return chaine.isEmpty() ? "0" : chaine;
     }
 
     /**

@@ -437,6 +437,21 @@ public class Polynome {
         return resultat;
     }
     
+    /**
+     * Calcule l'image du polynome pour une valeur x donnée en paramètre,
+     * en appliquant la méthode de Horner
+     * @param x valeur à laquelle calculer l'image du polynome
+     * @return l'image du polynome pour la valeur x donnée en paramètre
+     */
+	public double image(double x) {
+		double resultat = 0;
+		for (int indice = coefficients.length - 1; indice >= 0; indice--) {
+			resultat = resultat * x + coefficients[indice];
+			System.out.println("calcul de l'image de " + x + " = " + resultat);
+		}
+		return resultat;
+	}
+    
     
     
     /**

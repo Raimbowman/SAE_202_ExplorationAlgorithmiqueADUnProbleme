@@ -710,4 +710,26 @@ class PolynomeTest {
                          .soustraction(new Polynome(new double[] {5})),
                      "Echec soustraction polynôme degré 4 et degré 0");
     }
+    
+    /**
+     * Tests de la méthode de calcul de l'image d'un polynôme en un point donné
+     * Ces tests couvrent les cas suivants :
+     * - image d'une constante,
+     * - image d'un polynôme de degré 1, 2, 3 et 4
+     */
+    @Test
+	void testImage() {
+		assertEquals(3.0, new Polynome(new double[] {3}).image(5), 1e-9,
+					 "Echec de l'image d'une constante");
+		assertEquals(-6.0, new Polynome(new double[] {2, -4}).image(2), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 1");
+		assertEquals(15.0, new Polynome(new double[] {1, -5, 6}).image(2), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 2");
+		assertEquals(-2.0, new Polynome(new double[] {2, -3, 4, -5}).image(1), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 3");
+		assertEquals(0.0, new Polynome(new double[] {1, -4, 6, -4, 1}).image(1), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 4");
+		assertEquals(359.0/9.0, new Polynome(new double[] {45, -32, 50}).image(1.0/3.0), 1e-9,
+					 "Echec de l'image d'un polynome de degré 2 avec une image décimale");
+	}
 }

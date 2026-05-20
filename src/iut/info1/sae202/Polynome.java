@@ -447,7 +447,6 @@ public class Polynome {
 		double resultat = 0;
 		for (int indice = coefficients.length - 1; indice >= 0; indice--) {
 			resultat = resultat * x + coefficients[indice];
-			System.out.println("calcul de l'image de " + x + " = " + resultat);
 		}
 		return resultat;
 	}

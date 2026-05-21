@@ -788,4 +788,33 @@ class PolynomeTest {
 				 	 new Polynome(new double[] {6, -16, 36, -16, 30}).primitive(),
 				 	 "Echec de la primitive d'un polynome de degré 4");
     }
+    
+    /**
+     * Tests de validation de la méthode de calcul de l'intégrale d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - intégrale d'un polynôme nul
+     * - intégrale d'un polynôme de degré 1, 2, 3 et 4
+     * - cas d'erreur où a > b qui doit renvoyer une IllegalArgumentException
+     * - cas où a et b sont égaux (intégrale nulle)
+     */
+    @Test
+    void testIntegrale() {
+		assertThrows(IllegalArgumentException.class,
+				 	 () -> new Polynome(new double[] {1, 2, 3}).integrale(2, 1),
+					 "Intégrale avec a > b n'a pas levé d'IllegalArgumentException");
+		assertEquals(0.0, new Polynome(new double[] {1, 2, 3}).integrale(1, 1),
+					 "Echec de l'intégrale d'un polynôme entre deux bornes égales");
+		assertEquals(5.0, new Polynome(new double[] {5}).integrale(0, 1),
+					 "Echec de l'intégrale d'une constante entre 0 et 1");
+		assertEquals(12.0, new Polynome(new double[] {1, 2}).integrale(0, 3),
+					 "Echec de l'intégrale d'un polynôme de degré 1 entre 0 et 3");
+		assertEquals(39.0, new Polynome(new double[] {1, 2, 3}).integrale(0, 3),
+					 "Echec de l'intégrale d'un polynôme de degré 2 entre 0 et 3");
+		assertEquals(237.0/2.0, new Polynome(new double[] {5, 6, 4, 2}).integrale(0, 3),
+					 "Echec de l'intégrale d'un polynôme de degré 3 entre 0 et 3");
+		assertEquals(364.0/3.0, new Polynome(new double[] {1, 6, 4}).integrale(-5, 2), 1e-9,
+				 "Echec de l'intégrale d'un polynôme de degré 2 entre -5 et 2");
+		assertEquals(-2600.0/3.0, new Polynome(new double[] {3, -9, -4}).integrale(-10, -2), 1e-9,
+				 "Echec de l'intégrale d'un polynôme de degré 2 entre -10 et -2");
+    }
 }

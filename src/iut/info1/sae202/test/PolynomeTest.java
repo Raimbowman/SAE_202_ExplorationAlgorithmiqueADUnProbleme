@@ -710,4 +710,111 @@ class PolynomeTest {
                          .soustraction(new Polynome(new double[] {5})),
                      "Echec soustraction polynôme degré 4 et degré 0");
     }
+    
+    /**
+     * Tests de la méthode de calcul de l'image d'un polynôme en un point donné
+     * Ces tests couvrent les cas suivants :
+     * - image d'une constante,
+     * - image d'un polynôme de degré 1, 2, 3 et 4
+     */
+    @Test
+	void testImage() {
+		assertEquals(3.0, new Polynome(new double[] {3}).image(5), 1e-9,
+					 "Echec de l'image d'une constante");
+		assertEquals(-6.0, new Polynome(new double[] {2, -4}).image(2), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 1");
+		assertEquals(15.0, new Polynome(new double[] {1, -5, 6}).image(2), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 2");
+		assertEquals(-2.0, new Polynome(new double[] {2, -3, 4, -5}).image(1), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 3");
+		assertEquals(0.0, new Polynome(new double[] {1, -4, 6, -4, 1}).image(1), 1e-9,
+					 "Echec de l'image d'un polynôme de degré 4");
+		assertEquals(359.0/9.0, new Polynome(new double[] {45, -32, 50}).image(1.0/3.0), 1e-9,
+					 "Echec de l'image d'un polynome de degré 2 avec une image décimale");
+	}
+    
+    /**
+     * Tests de validation de la méthode de calcul de dérivée d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - dérivée d'une constante,
+     * - dérivée d'un polynôme de degré 1, 2, 3, 4 et 5
+     */
+    @Test
+    void testDerivee() {
+    	assertEquals(new Polynome(new double[] {0}),
+    				 new Polynome(new double[] {5}).derivee(),
+    				 "Echec de la dérivée d'une constante");
+    	assertEquals(new Polynome(new double[] {1}),
+    				 new Polynome(new double[] {7, 1}).derivee(),
+    				 "Echec de la dérivée d'un polynôme de degré 1");
+		assertEquals(new Polynome(new double[] {5, 6}),
+					 new Polynome(new double[] {1, 5, 3}).derivee(),
+					 "Echec de la dérivée d'un polynôme de degré 2");
+		assertEquals(new Polynome(new double[] {6, 3, 5}),					 // 3x^2 + 3x + 6
+					 new Polynome(new double[] {46, 6, 3.0/2.0, 5.0/3.0}).derivee(), //5/3x^3 + 3/2x^2 + 6x + 46
+					 "Echec de la dérivée d'un polynome de degré 3");
+		assertEquals(new Polynome(new double[] {2, 6, 12}),
+				 	 new Polynome(new double[] {1, 2, 3, 4}).derivee(),
+				 	 "Echec de la dérivée d'un polynome de degré 4");
+		assertEquals(new Polynome(new double[] {6, -16, 36, -16, 30}),
+				 	 new Polynome(new double[] {-3, 6, -8, 12, -4, 6}).derivee(),
+				 	 "Echec de la dérivée d'un polynome de degré 5");
+    }
+    
+    /**
+     * Tests de validation de la méthode de calcul de la primitive d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - primitive d'un polynôme nul
+     * - primitive d'un polynôme de degré 1, 2, 3 et 4
+     */
+    @Test
+    void testPrimitive() {
+    	assertEquals(new Polynome(new double[] {0}), //constante k
+					 new Polynome(new double[] {0}).primitive(),
+					 "Echec de la primitive d'un polynome nul");
+    	assertEquals(new Polynome(new double[] {0, 1}),
+					 new Polynome(new double[] {1}).primitive(),
+					 "Echec de la primitive d'une constante");
+		assertEquals(new Polynome(new double[] {0, 5, 3}),
+					 new Polynome(new double[] {5, 6}).primitive(),
+					 "Echec de la primitive d'un polynôme de degré 1");
+		assertEquals(new Polynome(new double[] {0, 6, 3.0/2.0, 5.0/3.0}),
+					 new Polynome(new double[] {6, 3, 5}).primitive(),
+					 "Echec de la primitive d'un polynome de degré 2");
+		assertEquals(new Polynome(new double[] {0, 2, 3, 4}),
+				 	 new Polynome(new double[] {2, 6, 12}).primitive(),
+				 	 "Echec de la primitive d'un polynome de degré 3");
+		assertEquals(new Polynome(new double[] {0, 6, -8, 12, -4, 6}),
+				 	 new Polynome(new double[] {6, -16, 36, -16, 30}).primitive(),
+				 	 "Echec de la primitive d'un polynome de degré 4");
+    }
+    
+    /**
+     * Tests de validation de la méthode de calcul de l'intégrale d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - intégrale d'un polynôme nul
+     * - intégrale d'un polynôme de degré 1, 2, 3 et 4
+     * - cas d'erreur où a > b qui doit renvoyer une IllegalArgumentException
+     * - cas où a et b sont égaux (intégrale nulle)
+     */
+    @Test
+    void testIntegrale() {
+		assertThrows(IllegalArgumentException.class,
+				 	 () -> new Polynome(new double[] {1, 2, 3}).integrale(2, 1),
+					 "Intégrale avec a > b n'a pas levé d'IllegalArgumentException");
+		assertEquals(0.0, new Polynome(new double[] {1, 2, 3}).integrale(1, 1),
+					 "Echec de l'intégrale d'un polynôme entre deux bornes égales");
+		assertEquals(5.0, new Polynome(new double[] {5}).integrale(0, 1),
+					 "Echec de l'intégrale d'une constante entre 0 et 1");
+		assertEquals(12.0, new Polynome(new double[] {1, 2}).integrale(0, 3),
+					 "Echec de l'intégrale d'un polynôme de degré 1 entre 0 et 3");
+		assertEquals(39.0, new Polynome(new double[] {1, 2, 3}).integrale(0, 3),
+					 "Echec de l'intégrale d'un polynôme de degré 2 entre 0 et 3");
+		assertEquals(237.0/2.0, new Polynome(new double[] {5, 6, 4, 2}).integrale(0, 3),
+					 "Echec de l'intégrale d'un polynôme de degré 3 entre 0 et 3");
+		assertEquals(364.0/3.0, new Polynome(new double[] {1, 6, 4}).integrale(-5, 2), 1e-9,
+				 "Echec de l'intégrale d'un polynôme de degré 2 entre -5 et 2");
+		assertEquals(-2600.0/3.0, new Polynome(new double[] {3, -9, -4}).integrale(-10, -2), 1e-9,
+				 "Echec de l'intégrale d'un polynôme de degré 2 entre -10 et -2");
+    }
 }

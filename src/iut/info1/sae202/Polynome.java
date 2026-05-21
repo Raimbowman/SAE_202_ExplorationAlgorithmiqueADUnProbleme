@@ -200,9 +200,10 @@ public class Polynome {
 	}
 
 	/**
-     * Vérifie la validité du tableau de coefficients en vérifiant : - un tableau
-     * null - un tableau vide - un tableau contenant des 0 inutiles
-     * 
+     * Vérifie la validité du tableau de coefficients en vérifiant :
+     * - un tableau null
+     * - un tableau vide
+     * - un tableau contenant des 0 inutiles à la fin (pour les monômes de plus haut degré)
      * @param coefficients les différents coefficients du polynôme, donnés dans
      *                     l'ordre croissant du degré.
      * @return false si les valeurs du tableau sont valides, true sinon
@@ -437,8 +438,75 @@ public class Polynome {
         return resultat;
     }
     
+    /**
+     * Calcule l'image du polynome pour une valeur x donnée en paramètre,
+     * en appliquant la méthode de Horner
+     * @param x valeur à laquelle calculer l'image du polynome
+     * @return l'image du polynome pour la valeur x donnée en paramètre
+     */
+	public double image(double x) {
+		double resultat = 0;
+		for (int indice = coefficients.length - 1; indice >= 0; indice--) {
+			resultat = resultat * x + coefficients[indice];
+		}
+		return resultat;
+	}
     
+    /**
+     * Calcule la dérivée du polynome en appliquant la formule de dérivation
+     * d'un polynome : la dérivée de Kx^n est nKx^n-1
+     * @return les coefficients du polynome dérivé
+     */
+	public Polynome derivee() {
+		if (coefficients.length <= 1) {
+			return new Polynome(new double[] {0});
+		} // la dérivée d'un polynome constant ou nul est le polynome nul
+		double[] resultat = new double[coefficients.length - 1];
+		for (int indice = coefficients.length - 1; indice > 0; indice--) {
+			resultat[indice - 1] = indice * coefficients[indice];
+		}
+		return new Polynome(resultat);
+	}
+	
+	/**
+	 * Calcule une primitive du polynome en appliquant la formule de primitivation
+	 * d'un polynome : une primitive de Kx^n est K/(n+1)x^n+1
+	 * @return les coefficients du polynome primitivé,
+	 * 		   à noter que le constante k est représentée par un 0
+	 */
+	public Polynome primitive() {
+		if (coefficients.length == 1 && coefficients[0] == 0) {
+			return new Polynome(new double[] {0});
+		} // cas du polynome nul, sa primitive est aussi le polynome nul
+		double[] resultat = new double[coefficients.length + 1];
+		resultat[0] = 0; // la constante d'intégration est représentée par un 0
+		for (int indice = 0; indice < coefficients.length; indice++) {
+			resultat[indice + 1] = coefficients[indice] / (indice + 1);
+		}
+		return new Polynome(resultat);
+	}
     
+	/**
+	 * Calcule l'intégrale du polynome entre les limites a et b
+	 * en appliquant la formule de calcul d'une intégrale définie :
+	 * l'intégrale de a à b d'une fonction f est égale à F(b) - F(a)
+	 * avec F une primitive de f
+	 * @param a borne inférieure de l'intervalle d'intégration
+	 * @param b borne supérieure de l'intervalle d'intégration
+	 * @return l'intégrale du polynome entre les limites a et b
+	 * @throws IllagalArgumentException si a est supérieur à b
+	 */
+	public double integrale(double a, double b) {
+		if (a > b) {
+			throw new IllegalArgumentException("La borne inférieure doit être"
+					  + "inférieure ou égale à la borne supérieure");
+		}
+		return primitive().image(b) - primitive().image(a);
+	}
+	
+	
+	
+	
     /**
      * Vérifie si le polynome est égal à un autre polynome en paramètre
      * en comparant les coefficients de chacun des polynomes

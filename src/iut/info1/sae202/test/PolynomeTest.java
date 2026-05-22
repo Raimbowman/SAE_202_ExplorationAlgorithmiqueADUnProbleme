@@ -794,14 +794,10 @@ class PolynomeTest {
      * Ces tests couvrent les cas suivants :
      * - intégrale d'un polynôme nul
      * - intégrale d'un polynôme de degré 1, 2, 3 et 4
-     * - cas d'erreur où a > b qui doit renvoyer une IllegalArgumentException
      * - cas où a et b sont égaux (intégrale nulle)
      */
     @Test
     void testIntegrale() {
-		assertThrows(IllegalArgumentException.class,
-				 	 () -> new Polynome(new double[] {1, 2, 3}).integrale(2, 1),
-					 "Intégrale avec a > b n'a pas levé d'IllegalArgumentException");
 		assertEquals(0.0, new Polynome(new double[] {1, 2, 3}).integrale(1, 1),
 					 "Echec de l'intégrale d'un polynôme entre deux bornes égales");
 		assertEquals(5.0, new Polynome(new double[] {5}).integrale(0, 1),
@@ -816,5 +812,40 @@ class PolynomeTest {
 				 "Echec de l'intégrale d'un polynôme de degré 2 entre -5 et 2");
 		assertEquals(-2600.0/3.0, new Polynome(new double[] {3, -9, -4}).integrale(-10, -2), 1e-9,
 				 "Echec de l'intégrale d'un polynôme de degré 2 entre -10 et -2");
+		assertEquals(-180, new Polynome(new double[] {5, -12, 3}).integrale(7, -3), 1e-9,
+				 "Echec de l'intégrale d'un polynôme de degré 2 entre 7 et -3");
     }
+    
+    /**
+     * Tests de validation de la méthode de calcul de la moyenne d'un polynôme
+     * Ces tests couvrent les cas suivants :
+     * - moyenne d'un polynôme nul
+     * - moyenne d'une constante
+     * - moyenne d'un polynôme de degré 1, 2, 3 et 4
+     * - cas où a et b sont égaux (moyenne égale à l'image du polynôme en ce point)
+     */
+	@Test
+	void testMoyenne() {
+	    assertEquals(0.0, new Polynome(new double[] {0}).moyenne(0, 1), 1e-9,
+	        "Echec de la moyenne d'un polynôme nul");
+	    assertEquals(5.0, new Polynome(new double[] {5}).moyenne(0, 1), 1e-9,
+	        "Echec de la moyenne d'une constante entre 0 et 1");
+	    assertEquals(-3.0, new Polynome(new double[] {-3}).moyenne(2, 5), 1e-9,
+	        "Echec de la moyenne d'une constante négative");
+	    assertEquals(4.0, new Polynome(new double[] {1, 2}).moyenne(0, 3), 1e-9,
+	        "Echec de la moyenne d'un polynôme de degré 1 entre 0 et 3");
+	    assertEquals(13.0, new Polynome(new double[] {1, 2, 3}).moyenne(0, 3), 1e-9,
+	        "Echec de la moyenne d'un polynôme de degré 2 entre 0 et 3");
+	    assertEquals(39.5, new Polynome(new double[] {5, 6, 4, 2}).moyenne(0, 3), 1e-9,
+	        "Echec de la moyenne d'un polynôme de degré 3 entre 0 et 3");
+	    assertEquals(31.0, new Polynome(new double[] {1, 2, 3, 4, 5}).moyenne(0, 2), 1e-9,
+	        "Echec de la moyenne d'un polynôme de degré 4 entre 0 et 2");
+	    assertEquals(5.0, new Polynome(new double[] {5}).moyenne(3, 3), 1e-9,
+	        "Echec de la moyenne quand a = b (constante)");
+	    assertEquals(3.0, new Polynome(new double[] {1, 2}).moyenne(1, 1), 1e-9,
+	        "Echec de la moyenne quand a = b (degré 1, image en x=1)");
+	    assertEquals(17.0, new Polynome(new double[] {1, 2, 3}).moyenne(2, 2), 1e-9,
+	        "Echec de la moyenne quand a = b (degré 2, image en x=2)");
+	}
+
 }

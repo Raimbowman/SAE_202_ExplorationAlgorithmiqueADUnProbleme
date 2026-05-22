@@ -491,17 +491,27 @@ public class Polynome {
 	 * en appliquant la formule de calcul d'une intégrale définie :
 	 * l'intégrale de a à b d'une fonction f est égale à F(b) - F(a)
 	 * avec F une primitive de f
-	 * @param a borne inférieure de l'intervalle d'intégration
-	 * @param b borne supérieure de l'intervalle d'intégration
+	 * @param a première borne de l'intervalle d'intégration
+	 * @param b seconde borne de l'intervalle d'intégration
 	 * @return l'intégrale du polynome entre les limites a et b
-	 * @throws IllagalArgumentException si a est supérieur à b
 	 */
 	public double integrale(double a, double b) {
-		if (a > b) {
-			throw new IllegalArgumentException("La borne inférieure doit être"
-					  + "inférieure ou égale à la borne supérieure");
-		}
 		return primitive().image(b) - primitive().image(a);
+	}
+	
+	/**
+	 * Calcule la moyenne du polynome entre les bornes a et b
+	 * @param a première borne de l'intervalle de calcul de la moyenne
+	 * @param b seconde borne de l'intervalle de calcul de la moyenne
+	 * @return la moyenne du polynome entre les bornes a et b,
+	 *         calculée en appliquant la formule de calcul d'une moyenne :
+	 *         integrale de a à b de f(x) dx / (b - a)
+	 */
+	public double moyenne(double a, double b) {
+	    if (a == b) {
+	        return image(a);
+	    }
+	    return integrale(a, b) / (b - a);
 	}
 	
 	

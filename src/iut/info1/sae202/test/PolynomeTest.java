@@ -850,6 +850,41 @@ class PolynomeTest {
 	}
 	
 	/**
+	 * Tests de validation de la méthode de calcul du PGCD de deux polynômes
+	 * Ces tests couvrent les cas suivants :
+	 * - PGCD de deux polynômes de degré 0 (constantes),
+	 * - PGCD de deux polynômes de degré 1, 2, 3 et 4,
+	 * - cas où les polynômes sont premiers entre eux (PGCD = 1),
+	 * - cas où l'un des polynômes est nul (PGCD = l'autre polynôme),
+	 * - cas invalides levant une IllegalArgumentException
+	 */
+	@Test
+	void testPgcd() {
+        Polynome pA1 = new Polynome(new double[]{2, -3, 1});
+        Polynome pB1 = new Polynome(new double[]{3, -4, 1});
+        Polynome attendu1 = new Polynome(new double[]{-1, 1});
+        assertEquals(attendu1, pA1.pgcd(pB1));
+        
+        Polynome pA2 = new Polynome(new double[]{-1, 1});
+        Polynome pB2 = new Polynome(new double[]{-2, 1});
+        Polynome attendu2 = new Polynome(new double[]{1});
+        assertEquals(attendu2, pA2.pgcd(pB2));
+
+        Polynome pA3 = new Polynome(new double[]{-4, 0, 1});
+        Polynome pB3 = new Polynome(new double[]{0});
+        Polynome attendu3 = new Polynome(new double[]{-4, 0, 1});
+        assertEquals(attendu3, pA3.pgcd(pB3));
+
+        Polynome pA4 = new Polynome(new double[]{0, 4, 2});
+        Polynome pB4 = new Polynome(new double[]{2, 1});
+        Polynome attendu4 = new Polynome(new double[]{2, 1});
+        assertEquals(attendu4, pA4.pgcd(pB4));
+
+        Polynome pA5 = new Polynome(new double[]{1, 1});
+        assertThrows(IllegalArgumentException.class, () -> pA5.pgcd(null));
+    }
+	
+	/**
 	 * Tests de validation de la méthode de sauvegarde et de chargement d'un polynôme
 	 * Ces tests sauvegardent et chargent des fichiers contenant des polynômes
 	 * de différents degrés, avec des coefficients entiers et décimaux,

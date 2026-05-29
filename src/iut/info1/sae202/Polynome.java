@@ -20,11 +20,6 @@ import java.io.IOException;
  */
 public class Polynome {
 
-    /**
-	 * 
-	 */
-	private static final String CHEMIN_ACCES_SAUVEGARDE = "src/iut/info1/sae202/sauvegarde/polynome.txt";
-
 	private final String MESSAGE_ERREUR_COEFFICIENTS = "Tableau de coefficients invalide";
 
     private final String MESSAGE_ERREUR_RACINES = "Tableaux de racines, d'ordre de multiplicité "
@@ -529,6 +524,38 @@ public class Polynome {
 	}
 	
 	/**
+	 * Calcule le PGCD de deux polynomes en appliquant l'algorithme d'Euclide
+	 * pour les polynomes :
+	 * PGCD(A, B) = PGCD(B, R) avec R le reste de la division de A par B
+	 * et PGCD(A, 0) = A
+	 * @param secondPolynome polynome par lequel calculer le PGCD du premier polynome
+	 * @return le PGCD des deux polynomes, calculé en appliquant l'algorithme d'Euclide pour les polynomes
+	 * @throws IllegalArgumentException si un polynome est null
+	 */
+	public Polynome pgcd(Polynome secondPolynome) {
+		if (secondPolynome == null) {
+			throw new IllegalArgumentException("Le second polynôme ne peut pas être nul");
+		}
+
+		Polynome a = this;
+		Polynome b = secondPolynome;
+
+		while (b.getDegre() >= 0 && !(b.coefficients.length == 1 && b.coefficients[0] == 0)) {
+			Polynome reste = a.division(b)[1];
+			a = b;
+			b = reste;
+		}
+
+		// Normalisation : On rend le polynôme unitaire (plus haut coefficient à 1)
+		double maxCoef = a.coefficients[a.coefficients.length - 1];
+		if (maxCoef != 0 && maxCoef != 1.0) {
+			a = a.multiplication(1.0 / maxCoef);
+		}
+
+		return a;
+	}
+	
+	/**
 	 * Sauvegarde le polynôme dans le fichier.
 	 * Si construit par coefficients : préfixe "C:" suivi du toString()
 	 * Si construit par racines      : délègue à sauvegarderParRacines()
@@ -645,19 +672,6 @@ public class Polynome {
 	    }
 	}
 	
-	
-	public static void main(String[] args) {
-		supprimerFichier(CHEMIN_ACCES_SAUVEGARDE);
-		
-		Polynome p1 = new Polynome(new double[] {1, 13, 3});
-		Polynome p2 = new Polynome(new double[] {2, 3}, new int[] {1, 1}, 3);
-		
-		p1.sauvegarderPolynome(CHEMIN_ACCES_SAUVEGARDE);
-		p2.sauvegarderPolynome(CHEMIN_ACCES_SAUVEGARDE);
-		
-		System.out.println(chargerPolynome(CHEMIN_ACCES_SAUVEGARDE, 1));
-		System.out.println(chargerPolynome(CHEMIN_ACCES_SAUVEGARDE, 2));
-	}
 	
 	
     /**

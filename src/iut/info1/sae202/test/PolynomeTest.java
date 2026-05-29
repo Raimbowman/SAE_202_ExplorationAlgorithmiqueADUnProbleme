@@ -2,6 +2,7 @@ package iut.info1.sae202.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import iut.info1.sae202.Polynome;
 
@@ -847,5 +848,72 @@ class PolynomeTest {
 	    assertEquals(17.0, new Polynome(new double[] {1, 2, 3}).moyenne(2, 2), 1e-9,
 	        "Echec de la moyenne quand a = b (degré 2, image en x=2)");
 	}
+	
+	/**
+	 * Tests de validation de la méthode de sauvegarde et de chargement d'un polynôme
+	 * Ces tests sauvegardent et chargent des fichiers contenant des polynômes
+	 * de différents degrés, avec des coefficients entiers et décimaux,
+	 * et construits à partir de racines
+	 */
+	@Test
+	void testSauvegardeChargement() {
+	    String fichier = "polynomes_test.txt";
+	    
+	    Polynome p1 = new Polynome(new double[] {3, 5, 2});                          // construit par coefficients
+	    Polynome p2 = new Polynome(new double[] {-2, 342, 1000});                    // construit par coefficients
+	    Polynome p3 = new Polynome(new double[] {5});                                // constante
+	    Polynome p4 = new Polynome(new double[] {0});                                // polynome nul
+	    Polynome p5 = new Polynome(new double[] {1.5, -3.75, 2.25});                 // coefficients décimaux
+	    Polynome p6 = new Polynome(new double[] {2.0, 3.0}, new int[] {1, 1}, 3.0); // construit par racines
+	    Polynome p7 = new Polynome(new double[] {2.0}, new int[] {2}, 1.0);          // racine double
+	    Polynome p8 = new Polynome(new double[] {-1.0, 0.0, 5.0}, new int[] {1, 1, 1}, -3.0); // trois racines distinctes
+	    
+	    p1.sauvegarderPolynome(fichier); // ligne 1
+	    p2.sauvegarderPolynome(fichier); // ligne 2
+	    p3.sauvegarderPolynome(fichier); // ligne 3
+	    p4.sauvegarderPolynome(fichier); // ligne 4
+	    p5.sauvegarderPolynome(fichier); // ligne 5
+	    p6.sauvegarderPolynome(fichier); // ligne 6
+	    p7.sauvegarderPolynome(fichier); // ligne 7
+	    p8.sauvegarderPolynome(fichier); // ligne 8
+	    
+	    // Vérification que chaque polynôme chargé est égal au polynôme sauvegardé
+	    assertEquals(p1, Polynome.chargerPolynome(fichier, 1),
+	                 "Echec sauvegarde/chargement d'un polynôme de degré 2 par coefficients");
+	    assertEquals(p2, Polynome.chargerPolynome(fichier, 2),
+	                 "Echec sauvegarde/chargement d'un polynôme de degré 2 avec grands coefficients");
+	    assertEquals(p3, Polynome.chargerPolynome(fichier, 3),
+	                 "Echec sauvegarde/chargement d'une constante");
+	    assertEquals(p4, Polynome.chargerPolynome(fichier, 4),
+	                 "Echec sauvegarde/chargement du polynôme nul");
+	    assertEquals(p5, Polynome.chargerPolynome(fichier, 5),
+	                 "Echec sauvegarde/chargement d'un polynôme avec coefficients décimaux");
+	    assertEquals(p6, Polynome.chargerPolynome(fichier, 6),
+	                 "Echec sauvegarde/chargement d'un polynôme construit par racines");
+	    assertEquals(p7, Polynome.chargerPolynome(fichier, 7),
+	                 "Echec sauvegarde/chargement d'un polynôme avec racine double");
+	    assertEquals(p8, Polynome.chargerPolynome(fichier, 8),
+	                 "Echec sauvegarde/chargement d'un polynôme avec trois racines distinctes");
+	    
+	    // Vérification des cas invalides
+	    assertThrows(IllegalArgumentException.class,
+	                 () -> Polynome.chargerPolynome(fichier, 0),
+	                 "Numéro de ligne 0 aurait dû lever une IllegalArgumentException");
+	    assertThrows(IllegalArgumentException.class,
+	                 () -> Polynome.chargerPolynome(fichier, -1),
+	                 "Numéro de ligne négatif aurait dû lever une IllegalArgumentException");
+	    assertThrows(RuntimeException.class,
+	                 () -> Polynome.chargerPolynome(fichier, 99),
+	                 "Ligne inexistante aurait dû lever une RuntimeException");
+	    assertThrows(RuntimeException.class,
+	                 () -> Polynome.chargerPolynome("fichier_inexistant.txt", 1),
+	                 "Fichier inexistant aurait dû lever une RuntimeException");
+	}
+	
+	@AfterAll
+	static void cleanup() {
+		Polynome.supprimerFichier("polynomes_test.txt");
+	}
+	
 
 }

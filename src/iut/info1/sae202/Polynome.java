@@ -4,14 +4,28 @@
  */
 package iut.info1.sae202;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * Polynôme sous la forme Kx^n + Kx^n-1 + ... + Kx^0 avec K un réel quelconque
  * 
  * @author Noam LACOMBE
+ * @author Anaëlle HINARD
+ * @author Eva GUENEGOU
  */
 public class Polynome {
 
-    private final String MESSAGE_ERREUR_COEFFICIENTS = "Tableau de coefficients invalide";
+    /**
+	 * 
+	 */
+	private static final String CHEMIN_ACCES_SAUVEGARDE = "src/iut/info1/sae202/sauvegarde/polynome.txt";
+
+	private final String MESSAGE_ERREUR_COEFFICIENTS = "Tableau de coefficients invalide";
 
     private final String MESSAGE_ERREUR_RACINES = "Tableaux de racines, d'ordre de multiplicité "
             + "ou de coefficient du plus haut monôme invalides";
@@ -514,7 +528,136 @@ public class Polynome {
 	    return integrale(a, b) / (b - a);
 	}
 	
+	/**
+	 * Sauvegarde le polynôme dans le fichier.
+	 * Si construit par coefficients : préfixe "C:" suivi du toString()
+	 * Si construit par racines      : délègue à sauvegarderParRacines()
+	 * @param cheminFichier chemin du fichier, par exemple "polynomes.txt"
+	 */
+	public void sauvegarderPolynome(String cheminFichier) {
+	    if (numeroConstructeur == 2) {
+	        sauvegarderParRacines(cheminFichier);
+	        return;
+	    }
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier, true))) {
+	        writer.write("C:" + this.toString());
+	        writer.newLine();
+	    } catch (IOException e) {
+	        throw new RuntimeException("Erreur lors de la sauvegarde : " + e.getMessage());
+	    }
+	}
 	
+	/**
+	 * Sauvegarde le polynôme par ses racines, ordres de multiplicité
+	 * et coefficient du monôme de plus haut degré.
+	 * Format de la ligne : "R:racine1,racine2;ordre1,ordre2;hautCoefficient"
+	 * Exemple : "R:2.0,3.0;1,1;3.0"
+	 * Appelée uniquement par sauvegarderPolynome() si numeroConstructeur == 2
+	 * @param cheminFichier chemin du fichier, par exemple "polynomes.txt"
+	 */
+	private void sauvegarderParRacines(String cheminFichier) {
+	    StringBuilder ligne = new StringBuilder("R:");
+
+	    // racines séparées par des virgules
+	    for (int i = 0; i < racines.length; i++) {
+	        if (i > 0) ligne.append(",");
+	        ligne.append(racines[i]);
+	    }
+	    ligne.append(";");
+
+	    // ordres de multiplicité séparés par des virgules
+	    for (int i = 0; i < ordresMultiplicite.length; i++) {
+	        if (i > 0) ligne.append(",");
+	        ligne.append(ordresMultiplicite[i]);
+	    }
+	    ligne.append(";");
+
+	    // coefficient du monôme de plus haut degré
+	    ligne.append(plusHautCoefficient);
+
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier, true))) {
+	        writer.write(ligne.toString());
+	        writer.newLine();
+	    } catch (IOException e) {
+	        throw new RuntimeException("Erreur lors de la sauvegarde par racines : " + e.getMessage());
+	    }
+	}
+
+	/**
+	 * Charge le n-ième polynôme depuis le fichier, en reconstruisant
+	 * le bon type selon le préfixe de la ligne ("C:" ou "R:").
+	 * La numérotation commence à 1.
+	 * @param cheminFichier chemin du fichier, par exemple "polynomes.txt"
+	 * @param n numéro du polynôme à charger (1 = premier)
+	 * @return le polynôme reconstruit avec le bon constructeur
+	 * @throws IllegalArgumentException si n < 1
+	 * @throws RuntimeException si la ligne n'existe pas ou est invalide
+	 */
+	public static Polynome chargerPolynome(String cheminFichier, int n) {
+	    if (n < 1) {
+	        throw new IllegalArgumentException("Le numéro du polynôme doit être supérieur ou égal à 1");
+	    }
+	    try (BufferedReader reader = new BufferedReader(new FileReader(cheminFichier))) {
+	        String ligne;
+	        int compteur = 0;
+	        while ((ligne = reader.readLine()) != null) {
+	            compteur++;
+	            if (compteur == n) {
+	                if (ligne.startsWith("C:")) {
+	                    return new Polynome(ligne.substring(2));
+	                } else if (ligne.startsWith("R:")) {
+	                    String[] parties = ligne.substring(2).split(";");
+	                    // parties[0] = racines, parties[1] = ordres, parties[2] = hautCoefficient
+	                    String[] racinesStr       = parties[0].split(",");
+	                    String[] ordresStr        = parties[1].split(",");
+	                    double   hautCoefficient  = Double.parseDouble(parties[2]);
+
+	                    double[] tabRacines = new double[racinesStr.length];
+	                    int[]    tabOrdres  = new int[ordresStr.length];
+	                    for (int i = 0; i < racinesStr.length; i++) {
+	                        tabRacines[i] = Double.parseDouble(racinesStr[i]);
+	                        tabOrdres[i]  = Integer.parseInt(ordresStr[i]);
+	                    }
+	                    return new Polynome(tabRacines, tabOrdres, hautCoefficient);
+	                } else {
+	                    throw new RuntimeException("Format de ligne inconnu à la ligne " + n);
+	                }
+	            }
+	        }
+	        throw new RuntimeException("Le fichier ne contient que " + compteur + " polynôme(s), ligne " + n + " introuvable");
+	    } catch (IOException e) {
+	        throw new RuntimeException("Erreur lors du chargement : " + e.getMessage());
+	    }
+	}
+	
+	/**
+	 * Supprime le fichier de sauvegarde des polynômes.
+	 * @param cheminFichier chemin du fichier à supprimer, par exemple "polynomes.txt"
+	 * @throws RuntimeException si la suppression échoue
+	 */
+	public static void supprimerFichier(String cheminFichier) {
+	    File fichier = new File(cheminFichier);
+	    if (!fichier.exists()) {
+	        System.out.println("Le fichier " + cheminFichier + " n'existe pas");
+	    }
+	    if (!fichier.delete()) {
+	    	System.out.println("Impossible de supprimer le fichier " + cheminFichier);
+	    }
+	}
+	
+	
+	public static void main(String[] args) {
+		supprimerFichier(CHEMIN_ACCES_SAUVEGARDE);
+		
+		Polynome p1 = new Polynome(new double[] {1, 13, 3});
+		Polynome p2 = new Polynome(new double[] {2, 3}, new int[] {1, 1}, 3);
+		
+		p1.sauvegarderPolynome(CHEMIN_ACCES_SAUVEGARDE);
+		p2.sauvegarderPolynome(CHEMIN_ACCES_SAUVEGARDE);
+		
+		System.out.println(chargerPolynome(CHEMIN_ACCES_SAUVEGARDE, 1));
+		System.out.println(chargerPolynome(CHEMIN_ACCES_SAUVEGARDE, 2));
+	}
 	
 	
     /**

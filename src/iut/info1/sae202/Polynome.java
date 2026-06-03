@@ -401,7 +401,7 @@ public class Polynome {
             throw new IllegalArgumentException("Division par un polynome nul impossible");
         } else if (!Double.isFinite(this.getDegre()) || !Double.isFinite(polynomeDiviseur.getDegre())) {
             throw new IllegalArgumentException("Division par un polynome de degré infini impossible");
-        }
+		}
 
         Polynome polynomeQuotient = new Polynome(new double[] { 0 });
         Polynome polynomeReste = this;

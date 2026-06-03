@@ -163,6 +163,25 @@ class PolynomeTest {
 		assertDoesNotThrow(() -> new Polynome("x^4+4x^3-3x^2-5x+2")); // polynome classique de degré 4
 		assertDoesNotThrow(() -> new Polynome("-6")); // constante négative
 		assertDoesNotThrow(() -> new Polynome("2.0x^2+5.0x+3.0")); // valeurs décimales
+		assertDoesNotThrow(() -> new Polynome("x"),
+                "\"x\" seul devrait être valide");
+		assertEquals(new Polynome(new double[] {0, 1}),
+		          	 new Polynome("x"),
+		          	 "Echec parsing de \"x\" seul");
+		assertDoesNotThrow(() -> new Polynome("+x"),
+		                "\"+x\" devrait être valide");
+		assertDoesNotThrow(() -> new Polynome("-x"),
+		                "\"-x\" devrait être valide");
+		assertDoesNotThrow(() -> new Polynome("x^2"),
+		                "\"x^2\" seul devrait être valide");
+		assertEquals(new Polynome(new double[] {0, 0, 1}),
+		          new Polynome("x^2"),
+		          "Echec parsing de \"x^2\" seul");
+		assertEquals(new Polynome(new double[] {0, 0, 5}),
+		          new Polynome("3x^2+2x^2"),
+		          "Echec : deux termes de même degré doivent être additionnés");
+		assertDoesNotThrow(() -> new Polynome("3x^2   +   5x  -  2"),
+		                "Espaces multiples dans la représentation String");
     }
     
     /**
@@ -216,15 +235,19 @@ class PolynomeTest {
         assertEquals(0, new Polynome(new double[] {5}).getDegre(),
                      "Echec des coefficients sur un degré nul");            //Constructeur coefficients degré 0
         assertEquals(1, new Polynome(new double[] {-2, 3}).getDegre(),
-                     "Echec des coefficients sur un degré 1");                //Constructeur coefficients degré 1
+                     "Echec des coefficients sur un degré 1");              //Constructeur coefficients degré 1
         assertEquals(2, new Polynome(new double[] {1, 0, 1}).getDegre(),
-                      "Echec des coefficients sur un degré 2");                    //Constructeur coefficients degré 2
+                      "Echec des coefficients sur un degré 2");             //Constructeur coefficients degré 2
         assertEquals(2, new Polynome(new double[] {5, -3},
                                      new int[] {1, 1}, 4).getDegre(),
-                      "Echec des racines sur un degré 2");                        //Constructeur racines degré 2
+                      "Echec des racines sur un degré 2");                  //Constructeur racines degré 2
         assertEquals(3, new Polynome(new double[] {-1, 4},
                                      new int[] {2, 1}, 8).getDegre(),
-                      "Echec des racines sur un degré 3");                        //Constructeur racines degré 3
+                      "Echec des racines sur un degré 3");                  //Constructeur racines degré 3
+        assertEquals(0, new Polynome(new double[] {0}).getDegre(),
+                "Echec getDegre du polynome nul (doit être 0)");			// Polynome nul : degré 0
+	    assertEquals(2, new Polynome("3x^2+5x+1").getDegre(),
+	                "Echec getDegre via constructeur String");				// Degré via constructeur String
     }
     
     /**
@@ -498,6 +521,14 @@ class PolynomeTest {
 	                 new Polynome(new double[] {-1, 2, 3}, new int[] {2, 1, 1}, 2).multiplication(new Polynome(new double[] {-3.5})),
 	                 "Echec des racines sur un polynôme de degré 4 "
 	                 + "multiplié par un polynôme de degré 0 décimal négatif");
+	    
+	    assertEquals(new Polynome(new double[] {0}),
+	    			 new Polynome(new double[] {3, -2, 1}).multiplication(0),
+	             	 "Echec multiplication par 0 : doit retourner le polynome nul");
+
+	    assertEquals(new Polynome(new double[] {0}),
+	             	 new Polynome(new double[] {3, -2, 1}).multiplication(new Polynome(new double[] {0})),
+	             	 "Echec multiplication par le polynome nul");
   }
 	
 	/**
@@ -564,6 +595,15 @@ class PolynomeTest {
 	    assertThrows(IllegalArgumentException.class,
 	                  () -> new Polynome(new double[] {1, 2, 3}).division(new Polynome(new double[] {0})),
 	                  "Division par le polynôme nul aurait dû lever une IllegalArgumentException");
+	    assertArrayEquals(
+	    	    new Polynome[] {new Polynome(new double[] {0.7}), new Polynome(new double[] {0})},
+	    	    new Polynome(new double[] {7}).division(new Polynome(new double[] {10})),
+	    	    "Echec division avec quotient nul et reste non nul entre deux constantes");
+	    Polynome pRacines = new Polynome(new double[] {2, 3}, new int[] {1, 1}, 2);
+    	assertArrayEquals(
+	    	    new Polynome[] {new Polynome(new double[] {1}), new Polynome(new double[] {0})},
+	    	    pRacines.division(pRacines),
+	    	    "Echec division d'un polynome racines par lui-même");
 	}
     
 	/**
@@ -598,6 +638,16 @@ class PolynomeTest {
         assertEquals("x^4 - 4.0x^3 + 3.0x^2 + 4.0x - 4.0",
                       new Polynome(new double[] {2, 1, -1}, new int[] {2, 1, 1}, 1).toString(),
                       "Echec des racines 2 (ordre 2), 1 et -1 avec coefficient 1");
+        assertEquals("3.0", new Polynome(new double[] {3}).toString(),
+                     "Echec toString d'une constante positive");
+        assertEquals("0", new Polynome(new double[] {0}).toString(),
+                     "Echec toString du polynome nul");
+        assertEquals("x^3", new Polynome(new double[] {0, 0, 0, 1}).toString(),
+                     "Echec toString avec coefficient 1 implicite degré 3");
+        assertEquals(" - x^2", new Polynome(new double[] {0, 0, -1}).toString(),
+                     "Echec toString avec coefficient -1 implicite degré 2");
+        assertEquals("x", new Polynome(new double[] {0, 1}).toString(),
+                     "Echec toString avec coefficient 1 implicite degré 1");
     }
     
     /**
@@ -710,6 +760,10 @@ class PolynomeTest {
                      new Polynome(new double[] {1, 2, 3, 4, 5})
                          .soustraction(new Polynome(new double[] {5})),
                      "Echec soustraction polynôme degré 4 et degré 0");
+        assertEquals(new Polynome(new double[] {-11, 32, -55}),
+	                 new Polynome(new double[] {-11, 31, -54})
+	                 .soustraction(new Polynome(new double[] {1, 0}, new int[] {1, 1}, 1)),
+	                 "Echec soustraction polynome coeff 1 et polynome racines");
     }
     
     /**
@@ -732,6 +786,16 @@ class PolynomeTest {
 					 "Echec de l'image d'un polynôme de degré 4");
 		assertEquals(359.0/9.0, new Polynome(new double[] {45, -32, 50}).image(1.0/3.0), 1e-9,
 					 "Echec de l'image d'un polynome de degré 2 avec une image décimale");
+		assertEquals(-2.0, new Polynome(new double[] {-2, 4, 3}).image(0), 1e-9,
+	             "Echec image en x=0 (doit retourner le terme constant)");
+		assertEquals(10.0, new Polynome(new double[] {1, 0, 1}).image(-3), 1e-9,
+		             "Echec image d'un polynome de degré 2 en x=-3");
+		assertDoesNotThrow(() -> new Polynome(new double[] {1e200, 1e200}).image(1e200),
+		                   "image() ne doit pas lever d'exception pour des valeurs à la limite du double");
+		assertTrue(Double.isInfinite(new Polynome(new double[] {1e200, 1e200}).image(1e200)),
+		           "Overflow numérique : image() doit retourner +/-infini et pas NaN");
+		assertEquals(0.0, new Polynome(new double[] {Double.MIN_VALUE}).image(0), 1e-300,
+	             "Underflow numérique : image d'une constante très petite en x=0");
 	}
     
     /**
@@ -815,6 +879,10 @@ class PolynomeTest {
 				 "Echec de l'intégrale d'un polynôme de degré 2 entre -10 et -2");
 		assertEquals(-180, new Polynome(new double[] {5, -12, 3}).integrale(7, -3), 1e-9,
 				 "Echec de l'intégrale d'un polynôme de degré 2 entre 7 et -3");
+		assertEquals(-39.0, new Polynome(new double[] {1, 2, 3}).integrale(3, 0), 1e-9,
+	             "Echec integrale avec bornes inversées (b < a)");
+		assertEquals(13.0, new Polynome(new double[] {1, 2, 3}).moyenne(3, 0), 1e-9,
+		             "Echec moyenne avec bornes inversées");
     }
     
     /**
@@ -887,6 +955,21 @@ class PolynomeTest {
 
         Polynome pA6 = new Polynome(new double[]{1, 1});
         assertThrows(IllegalArgumentException.class, () -> pA6.pgcd(null));
+        
+        Polynome c1 = new Polynome(new double[] {6});
+        Polynome c2 = new Polynome(new double[] {4});
+        assertEquals(new Polynome(new double[] {1}), c1.pgcd(c2),
+                     "Echec PGCD de deux constantes (résultat doit être normalisé à 1)");
+
+        Polynome m1 = new Polynome(new double[] {-2, 1}); // x - 2
+        Polynome m2 = new Polynome(new double[] {4, -4, 1}); // (x-2)^2
+        assertEquals(new Polynome(new double[] {-2, 1}), m2.pgcd(m1),
+                     "Echec PGCD lorsque l'un est un multiple de l'autre");
+
+        Polynome px = new Polynome(new double[] {1, 0, 1}); // x^2 + 1 (sans racine réelle)
+        Polynome py = new Polynome(new double[] {-1, 1}); // x - 1
+        assertEquals(new Polynome(new double[] {1}), px.pgcd(py),
+                     "Echec PGCD de deux polynomes premiers entre eux");
     }
 	
 	/**
@@ -952,6 +1035,11 @@ class PolynomeTest {
 				new double[][] {{0, 5}});
 		assertEquals(new Polynome(new double[] {5}), pConstante,
 				"Echec interpolation de 3 points à ordonnée constante");
+		
+		// Un seul point -> polynome constant
+		assertEquals(new Polynome(new double[] {7}),
+	             Polynome.interpolationPolynomiale(new double[][] {{3, 7}}),
+	             "Echec interpolation d'un seul point (constante)");
 	}
 	
 	/**

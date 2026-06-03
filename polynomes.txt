@@ -1,0 +1,4 @@
+=== Session polynomes ===
+P1 = 4.0x + 3.0
+P2 = 2.0x + 5.0
+P3 = 6.0x + 8.0

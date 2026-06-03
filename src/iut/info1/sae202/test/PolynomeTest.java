@@ -885,6 +885,71 @@ class PolynomeTest {
     }
 	
 	/**
+	 * Tests de validation de la méthode d'interpolation polynomiale
+	 * Ces tests couvrent les cas suivants :
+	 * - interpolation d'un seul point (constante),
+	 * - interpolation de 2 points (polynôme de degré 1),
+	 * - interpolation de 3 points (polynôme de degré 2),
+	 * - interpolation de 4 points (polynôme de degré 3),
+	 * - cas où tous les points ont la même ordonnée (polynôme constant),
+	 * - cas où les points appartiennent à une droite (polynôme de degré 1),
+	 * - vérification que le polynôme passe bien par tous les points donnés
+	 */
+	@Test
+	void testInterpolationPolynomiale() {
+
+	    // 2 points → droite y = 2x + 1
+	    Polynome p2pts = Polynome.interpolationPolynomiale(
+	        new double[][] {{0, 1}, {1, 3}});
+	    assertEquals(new Polynome(new double[] {1, 2}), p2pts,
+	        "Echec interpolation de 2 points (droite)");
+
+	    // 3 points → parabole y = x^2
+	    Polynome p3pts = Polynome.interpolationPolynomiale(
+	        new double[][] {{-1, 1}, {0, 0}, {1, 1}});
+	    assertEquals(new Polynome(new double[] {0, 0, 1}), p3pts,
+	        "Echec interpolation de 3 points (parabole x^2)");
+
+	    // 3 points → parabole y = 2x^2 + 3x - 2
+	    Polynome p3ptsB = Polynome.interpolationPolynomiale(
+	        new double[][] {{0, -2}, {1, 3}, {-1, -3}});
+	    assertEquals(new Polynome(new double[] {-2, 3, 2}), p3ptsB,
+	        "Echec interpolation de 3 points (parabole 2x^2+3x-2)");
+
+	    // 4 points → cubique y = x^3 - x
+	    Polynome p4pts = Polynome.interpolationPolynomiale(
+	        new double[][] {{-2, -6}, {-1, 0}, {1, 0}, {2, 6}});
+	    assertEquals(new Polynome(new double[] {0, -1, 0, 1}), p4pts,
+	        "Echec interpolation de 4 points (cubique x^3-x)");
+
+	    // Points alignés → le polynôme doit être de degré 1
+	    Polynome pAlignes = Polynome.interpolationPolynomiale(
+	        new double[][] {{0, 0}, {1, 1}, {2, 2}, {3, 3}});
+	    assertEquals(new Polynome(new double[] {0, 1}), pAlignes,
+	        "Echec interpolation de 4 points alignés (droite y=x)");
+
+	    // Même ordonnée → polynôme constant
+	    Polynome pConstant = Polynome.interpolationPolynomiale(
+	        new double[][] {{-1, 5}, {0, 5}, {1, 5}});
+	    assertEquals(new Polynome(new double[] {5}), pConstant,
+	        "Echec interpolation de 3 points à ordonnée constante");
+
+	    // Vérification que le polynôme passe par tous les points (image)
+	    double[][] points = {{0, 2}, {1, -1}, {3, 5}};
+	    Polynome pImage = Polynome.interpolationPolynomiale(points);
+	    for (double[] pt : points) {
+	        assertEquals(pt[1], pImage.image(pt[0]), 1e-9,
+	            "Le polynôme interpolé ne passe pas par le point (" + pt[0] + ", " + pt[1] + ")");
+	    }
+	    
+	    //Constante
+		Polynome pConstante = Polynome.interpolationPolynomiale(
+				new double[][] {{0, 5}});
+		assertEquals(new Polynome(new double[] {5}), pConstante,
+				"Echec interpolation de 3 points à ordonnée constante");
+	}
+	
+	/**
 	 * Tests de validation de la méthode de sauvegarde et de chargement d'un polynôme
 	 * Ces tests sauvegardent et chargent des fichiers contenant des polynômes
 	 * de différents degrés, avec des coefficients entiers et décimaux,

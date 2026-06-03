@@ -556,6 +556,28 @@ public class Polynome {
 	}
 	
 	/**
+	 * Calcule le polynome d'interpolation de Lagrange à partir de n points (x, y)
+	 * @param tabPoints tableau de points (x, y) à partir desquels calculer le polynome d'interpolation de Lagrange
+	 * @return le polynome d'interpolation de Lagrange à partir de n points (x, y)
+	 */
+	public static Polynome interpolationPolynomiale(double[][] tabPoints) {
+		Polynome resultat = new Polynome(new double[] {0});
+		for (int i = 0; i < tabPoints.length; i++) {
+			double xi = tabPoints[i][0];
+			double yi = tabPoints[i][1];
+			Polynome li = new Polynome(new double[] {1});
+			for (int j = 0; j < tabPoints.length; j++) {
+				if (j != i) {
+					double xj = tabPoints[j][0];
+					li = li.multiplication(new Polynome(new double[] {-xj, 1})).multiplication(1.0 / (xi - xj));
+				}
+			}
+			resultat = resultat.addition(li.multiplication(yi));
+		}
+		return resultat;
+	}
+	
+	/**
 	 * Sauvegarde le polynôme dans le fichier.
 	 * Si construit par coefficients : préfixe "C:" suivi du toString()
 	 * Si construit par racines      : délègue à sauvegarderParRacines()

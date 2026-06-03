@@ -26,7 +26,7 @@ public class Polynome {
             + "ou de coefficient du plus haut monôme invalides";
 
     private final String MESSAGE_ERREUR_GET_RACINES = "Racines disponibles pour un polynome construit "
-            + "à partir de ses racines";
+            + "à partir de ses coefficients";
 
     /**
      * différents coefficients du polynôme construit avec le constructeur prenant en

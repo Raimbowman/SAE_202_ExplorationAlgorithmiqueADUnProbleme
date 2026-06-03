@@ -539,22 +539,22 @@ public class Polynome {
 			return this;
 		}
 
-		Polynome a = this;
-		Polynome b = secondPolynome;
+		Polynome polynomeA = this;
+		Polynome polynomeB = secondPolynome;
 
-		while (b.getDegre() >= 0 && !(b.coefficients.length == 1 && b.coefficients[0] == 0)) {
-			Polynome reste = a.division(b)[1];
-			a = b;
-			b = reste;
+		while (polynomeB.getDegre() >= 0 && !(polynomeB.coefficients.length == 1 && polynomeB.coefficients[0] == 0)) {
+			Polynome reste = polynomeA.division(polynomeB)[1];
+			polynomeA = polynomeB;
+			polynomeB = reste;
 		}
 
 		// Normalisation : On rend le polynôme unitaire (plus haut coefficient à 1)
-		double maxCoef = a.coefficients[a.coefficients.length - 1];
+		double maxCoef = polynomeA.coefficients[polynomeA.coefficients.length - 1];
 		if (maxCoef != 0 && maxCoef != 1.0) {
-			a = a.multiplication(1.0 / maxCoef);
+			polynomeA = polynomeA.multiplication(1.0 / maxCoef);
 		}
 
-		return a;
+		return polynomeA;
 	}
 	
 	/**
@@ -564,13 +564,13 @@ public class Polynome {
 	 */
 	public static Polynome interpolationPolynomiale(double[][] tabPoints) {
 		Polynome resultat = new Polynome(new double[] {0});
-		for (int i = 0; i < tabPoints.length; i++) {
-			double xi = tabPoints[i][0];
-			double yi = tabPoints[i][1];
+		for (int indiceA = 0; indiceA < tabPoints.length; indiceA++) {
+			double xi = tabPoints[indiceA][0];
+			double yi = tabPoints[indiceA][1];
 			Polynome li = new Polynome(new double[] {1});
-			for (int j = 0; j < tabPoints.length; j++) {
-				if (j != i) {
-					double xj = tabPoints[j][0];
+			for (int indiceB = 0; indiceB < tabPoints.length; indiceB++) {
+				if (indiceB != indiceA) {
+					double xj = tabPoints[indiceB][0];
 					li = li.multiplication(new Polynome(new double[] {-xj, 1})).multiplication(1.0 / (xi - xj));
 				}
 			}
@@ -610,16 +610,16 @@ public class Polynome {
 	    StringBuilder ligne = new StringBuilder("R:");
 
 	    // racines séparées par des virgules
-	    for (int i = 0; i < racines.length; i++) {
-	        if (i > 0) ligne.append(",");
-	        ligne.append(racines[i]);
+	    for (int indice = 0; indice < racines.length; indice++) {
+	        if (indice > 0) ligne.append(",");
+	        ligne.append(racines[indice]);
 	    }
 	    ligne.append(";");
 
 	    // ordres de multiplicité séparés par des virgules
-	    for (int i = 0; i < ordresMultiplicite.length; i++) {
-	        if (i > 0) ligne.append(",");
-	        ligne.append(ordresMultiplicite[i]);
+	    for (int indice = 0; indice < ordresMultiplicite.length; indice++) {
+	        if (indice > 0) ligne.append(",");
+	        ligne.append(ordresMultiplicite[indice]);
 	    }
 	    ligne.append(";");
 
@@ -665,9 +665,9 @@ public class Polynome {
 
 	                    double[] tabRacines = new double[racinesStr.length];
 	                    int[]    tabOrdres  = new int[ordresStr.length];
-	                    for (int i = 0; i < racinesStr.length; i++) {
-	                        tabRacines[i] = Double.parseDouble(racinesStr[i]);
-	                        tabOrdres[i]  = Integer.parseInt(ordresStr[i]);
+	                    for (int indice = 0; indice < racinesStr.length; indice++) {
+	                        tabRacines[indice] = Double.parseDouble(racinesStr[indice]);
+	                        tabOrdres[indice]  = Integer.parseInt(ordresStr[indice]);
 	                    }
 	                    return new Polynome(tabRacines, tabOrdres, hautCoefficient);
 	                } else {
@@ -718,8 +718,8 @@ public class Polynome {
 	    }
 	
 	    // Comparer chaque coefficient avec une petite tolérance pour les décimaux
-	    for (int i = 0; i < this.coefficients.length; i++) {
-	        if (Math.abs(this.coefficients[i] - aComparer.coefficients[i]) > 1e-9) {
+	    for (int indice = 0; indice < this.coefficients.length; indice++) {
+	        if (Math.abs(this.coefficients[indice] - aComparer.coefficients[indice]) > 1e-9) {
 	            return false;
 	        }
 	    }

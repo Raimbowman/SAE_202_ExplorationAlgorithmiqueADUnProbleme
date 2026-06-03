@@ -879,9 +879,14 @@ class PolynomeTest {
         Polynome pB4 = new Polynome(new double[]{2, 1});
         Polynome attendu4 = new Polynome(new double[]{2, 1});
         assertEquals(attendu4, pA4.pgcd(pB4));
+        
+        Polynome pA5 = new Polynome(new double[]{5, 7, -3});
+        Polynome pB5 = new Polynome(new double[]{5, 7, -3});
+        Polynome attendu5 = new Polynome(new double[]{5, 7, -3});
+        assertEquals(attendu5, pA5.pgcd(pB5));
 
-        Polynome pA5 = new Polynome(new double[]{1, 1});
-        assertThrows(IllegalArgumentException.class, () -> pA5.pgcd(null));
+        Polynome pA6 = new Polynome(new double[]{1, 1});
+        assertThrows(IllegalArgumentException.class, () -> pA6.pgcd(null));
     }
 	
 	/**

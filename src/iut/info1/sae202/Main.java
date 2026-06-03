@@ -59,12 +59,14 @@ public class Main {
             System.out.println("  14. Calculer l'intégrale sur un intervalle");
             System.out.println("  15. Calculer la moyenne sur un intervalle");
             System.out.println("  16. Fiche récapitulative d'un polynôme");
-            System.out.println("  17. Réinitialiser le fichier de sauvegarde");
-            System.out.println("  18. Quitter");
+            System.out.println("  17. Calculer le PGCD de deux polynômes");
+            System.out.println("  18. Interpolation polynomiale");
+            System.out.println("  19. Réinitialiser le fichier de sauvegarde");
+            System.out.println("  20. Quitter");
             System.out.print(" --> ");
             choixAction = lireEntierSaisi();
-            if (choixAction < 1 || choixAction > 18) {
-                System.out.println("Veuillez saisir un nombre entre 1 et 18.");
+            if (choixAction < 1 || choixAction > 20) {
+                System.out.println("Veuillez saisir un nombre entre 1 et 20.");
             }
 
             switch (choixAction) {
@@ -352,15 +354,57 @@ public class Main {
                     break;
                 }
                 case 17: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.size() < 2) {
+                        System.out.println(MESSAGE_ERREUR_NOMBRE_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("premier", poly.size());
+                    int p2 = choisirPolynome("second", poly.size());
+                    Polynome pgcd = poly.get(p1).pgcd(poly.get(p2));
+                    System.out.println("PGCD(P" + (p1 + 1) + ", P" + (p2 + 1) + ") = " + pgcd.toString());
+                    proposerEnregistrement(pgcd);
+                    break;
+                }
+                case 18: {
+                    System.out.print("Nombre de points : \n --> ");
+                    int nbPoints;
+                    do {
+                        nbPoints = lireEntierSaisi();
+                        if (nbPoints <= 0) {
+                            System.out.print("Veuillez saisir un entier strictement positif : ");
+                        }
+                    } while (nbPoints <= 0);
+
+                    double[][] points = new double[nbPoints][2];
+                    System.out.println("Entrez les coordonnées de chaque point :");
+                    for (int i = 0; i < nbPoints; i++) {
+                        System.out.print("  Point " + (i + 1) + " - x : ");
+                        points[i][0] = lireReel();
+                        System.out.print("  Point " + (i + 1) + " - y : ");
+                        points[i][1] = lireReel();
+                    }
+
+                    try {
+                        Polynome interpolation = Polynome.interpolationPolynomiale(points);
+                        System.out.println("Polynôme d'interpolation : " + interpolation.toString());
+                        proposerEnregistrement(interpolation);
+                    } catch (Exception e) {
+                        System.out.println("Erreur lors de l'interpolation : " + e.getMessage());
+                    }
+                    break;
+                }
+                case 19: {
                     effacerFichier();
                     System.out.println("Le fichier a bien été réinitilisé.");
                     break;
                 }
-                case 18:
+                case 20:
                     System.out.println("Au revoir !");
                     break;
             }
-        } while (choixAction != 18);
+        } while (choixAction != 20);
     }
 
     /**

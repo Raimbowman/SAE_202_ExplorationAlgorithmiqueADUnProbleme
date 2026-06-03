@@ -535,6 +535,8 @@ public class Polynome {
 	public Polynome pgcd(Polynome secondPolynome) {
 		if (secondPolynome == null) {
 			throw new IllegalArgumentException("Le second polynôme ne peut pas être nul");
+		} else if (this.equals(secondPolynome)) {
+			return this;
 		}
 
 		Polynome a = this;

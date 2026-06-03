@@ -1,5 +1,3 @@
-
-
 /*
  * Main.java                        17/04/2026
  * IUT de Rodez, BUT1 2025-2026, pas de copyright
@@ -8,37 +6,65 @@ package iut.info1.sae202;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
- * TODO
- * TODO
+ * Interface en ligne de commande pour manipuler des polynômes.
+ * Permet la création, l'affichage, les opérations arithmétiques, 
+ * ainsi que l'analyse analytique (dérivée, intégrale, limites, etc.) de polynômes.
  * @author Anaëlle HINARD
+ * @author Noam LACOMBE
+ * @author Eva GUENEGOU
  */
 public class Main {
 
+    /** Scanner pour la lecture des entrées utilisateur sur la console. */
     private static final Scanner saisie = new Scanner(System.in);
+    
+    /** Message d'erreur lorsqu'une opération nécessite au moins deux polynômes. */
+    private static final String MESSAGE_ERREUR_NOMBRE_POLYNOME_CREE = "Il faut au moins 1 polynôme créé.";
+    
+    /** Message d'erreur lorsqu'aucun polynôme n'est disponible dans le fichier. */
+    private static final String MESSAGE_ERREUR_AUCUN_POLYNOME_CREE  = "Aucun polynôme créé pour l'instant.";
+    
+    /** Nom du fichier texte utilisé pour sauvegarder et charger les polynômes. */
+    private static final String NOM_FICHIER                         = "polynomes.txt";
 
+    /**
+     * Point d'entrée principal de l'application. 
+     * Gère la boucle principale du menu textuel et redirige vers les actions associées.
+     * @param args1 arguments de la ligne de commande (non utilisés)
+     */
     public static void main(String[] args1) {
-
-        // Permet d'ajouter des polynômes à volonté sans avoir à fixer une limite
-        ArrayList<Polynome> poly = new ArrayList<>();
 
         int choixAction;
         do {
             System.out.println("\n--- Que voulez-vous faire ? ---");
-            System.out.println("  1. Construire des polynômes");
-            System.out.println("  2. Afficher les polynômes créés");
-            System.out.println("  3. Addition");
-            System.out.println("  4. Soustraction");
-            System.out.println("  5. Multiplication");
-            System.out.println("  6. Division");
-            System.out.println("  7. Afficher les limites d'un polynôme");
-            System.out.println("  8. Afficher les racines d'un polynôme");
-            System.out.println("  9. Quitter");
+            System.out.println("  1.  Construire des polynômes");
+            System.out.println("  2.  Afficher les polynômes créés");
+            System.out.println("  3.  Addition");
+            System.out.println("  4.  Soustraction");
+            System.out.println("  5.  Multiplication");
+            System.out.println("  6.  Division");
+            System.out.println("  7.  Afficher les limites d'un polynôme");
+            System.out.println("  8.  Afficher les racines d'un polynôme");
+            System.out.println("  9.  Afficher le degré d'un polynôme");
+            System.out.println("  10. Afficher les coefficients d'un polynôme");
+            System.out.println("  11. Calculer l'image en un point");
+            System.out.println("  12. Calculer la dérivée");
+            System.out.println("  13. Calculer la primitive");
+            System.out.println("  14. Calculer l'intégrale sur un intervalle");
+            System.out.println("  15. Calculer la moyenne sur un intervalle");
+            System.out.println("  16. Fiche récapitulative d'un polynôme");
+            System.out.println("  17. Réinitialiser le fichier de sauvegarde");
+            System.out.println("  18. Quitter");
             System.out.print(" --> ");
             choixAction = lireEntierSaisi();
-            if (choixAction < 1 || choixAction > 9) {
-                System.out.println("Veuillez saisir un nombre entre 1 et 9.");
+            if (choixAction < 1 || choixAction > 18) {
+                System.out.println("Veuillez saisir un nombre entre 1 et 18.");
             }
 
             switch (choixAction) {
@@ -52,10 +78,8 @@ public class Main {
                         }
                     } while (nbPolynomesVoulu <= 0);
 
-                    System.out.println(nbPolynomesVoulu + " polynôme(s) à créer.");
-
                     for (int i = 0; i < nbPolynomesVoulu; i++) {
-                        int numeroActuel = poly.size() + 1;
+                        int numeroActuel = lireLigneBruteDuFichier().size() + 1;
                         System.out.println("\nCréation du polynôme P" + numeroActuel);
 
                         int choixConstructeur;
@@ -63,63 +87,71 @@ public class Main {
                             System.out.println("Comment voulez-vous créer votre polynôme P" + numeroActuel + " ?");
                             System.out.println("  1. Par coefficients");
                             System.out.println("  2. Par racines");
+                            System.out.println("  3. Par une chaîne de caractères (ex : 3x^2+4x-2)");
                             System.out.print(" --> ");
                             choixConstructeur = lireEntierSaisi();
-                            if (choixConstructeur != 1 && choixConstructeur != 2) {
-                                System.out.println("Veuillez saisir 1 ou 2.");
-                                System.out.println(" --> ");
+                            if (choixConstructeur < 1 || choixConstructeur > 3) {
+                                System.out.println("Veuillez saisir 1, 2 ou 3.");
                             }
-                        } while (choixConstructeur != 1 && choixConstructeur != 2);
+                        } while (choixConstructeur < 1 || choixConstructeur > 3);
 
                         Polynome nouveauPoly;
                         if (choixConstructeur == 1) {
                             nouveauPoly = saisirParCoefficients();
-                        } else {
+                        } else if (choixConstructeur == 2) {
                             nouveauPoly = saisirParRacines();
+                        } else {
+                            nouveauPoly = saisirParChaine();
                         }
-                        poly.add(nouveauPoly);
-                        System.out.println("P" + numeroActuel + " = " + nouveauPoly.toString());
+                        ecrireDansFichier("P" + numeroActuel + " = " + nouveauPoly.toString());
+                        System.out.println("P" + numeroActuel + " = " + nouveauPoly.toString() + " enregistré.");
                     }
                     break;
                 }
                 case 2: {
-                    if (poly.isEmpty()) {
-                        System.out.println("Aucun polynôme n'a été enregistré pour le moment.");
+                    ArrayList<String> lignes = lireLigneBruteDuFichier();
+                    if (lignes.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
                     } else {
-                        System.out.println("\n--- Polynômes créés ---");
-                        for (int i = 0; i < poly.size(); i++) {
-                            System.out.println("P" + (i + 1) + " = " + poly.get(i).toString());
+                        System.out.println("\n--- Polynômes enregistrés ---");
+                        for (String ligne : lignes) {
+                            System.out.println("  " + ligne);
                         }
                     }
                     break;
                 }
                 case 3: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
                     if (poly.size() < 2) {
-                        System.out.println("Il faut au moins 2 polynômes créés.");
+                        System.out.println(MESSAGE_ERREUR_NOMBRE_POLYNOME_CREE);
                         break;
                     }
+                    afficherListePolynomes(poly);
                     int p1 = choisirPolynome("premier", poly.size());
                     int p2 = choisirPolynome("second", poly.size());
-                    Polynome resultatAdd = poly.get(p1).addition(poly.get(p2));
-                    System.out.println("Résultat : " + resultatAdd.toString());
-                    proposerEnregistrement(resultatAdd, poly);
+                    Polynome resultat = poly.get(p1).addition(poly.get(p2));
+                    System.out.println("Résultat : " + resultat.toString());
+                    proposerEnregistrement(resultat);
                     break;
                 }
                 case 4: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
                     if (poly.size() < 2) {
-                        System.out.println("Il faut au moins 2 polynômes créés.");
+                        System.out.println(MESSAGE_ERREUR_NOMBRE_POLYNOME_CREE);
                         break;
                     }
+                    afficherListePolynomes(poly);
                     int p1 = choisirPolynome("premier", poly.size());
                     int p2 = choisirPolynome("second", poly.size());
-                    Polynome resultatSous = poly.get(p1).soustraction(poly.get(p2));
-                    System.out.println("Résultat : " + resultatSous.toString());
-                    proposerEnregistrement(resultatSous, poly);
+                    Polynome resultat = poly.get(p1).soustraction(poly.get(p2));
+                    System.out.println("Résultat : " + resultat.toString());
+                    proposerEnregistrement(resultat);
                     break;
                 }
                 case 5: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
                     if (poly.isEmpty()) {
-                        System.out.println("Il faut au moins 1 polynôme créé.");
+                        System.out.println(MESSAGE_ERREUR_NOMBRE_POLYNOME_CREE);
                         break;
                     }
                     System.out.println("Type de multiplication :");
@@ -134,58 +166,65 @@ public class Main {
                         }
                     } while (choixMult != 1 && choixMult != 2);
 
+                    afficherListePolynomes(poly);
                     if (choixMult == 1) {
                         if (poly.size() < 2) {
-                            System.out.println("Il faut au moins 2 polynômes créés.");
+                            System.out.println(MESSAGE_ERREUR_NOMBRE_POLYNOME_CREE);
                             break;
                         }
                         int p1 = choisirPolynome("premier", poly.size());
                         int p2 = choisirPolynome("second", poly.size());
-                        Polynome resultatMult = poly.get(p1).multiplication(poly.get(p2));
-                        System.out.println("Résultat : " + resultatMult.toString());
-                        proposerEnregistrement(resultatMult, poly);
+                        Polynome resultat = poly.get(p1).multiplication(poly.get(p2));
+                        System.out.println("Résultat : " + resultat.toString());
+                        proposerEnregistrement(resultat);
                     } else {
                         int p1 = choisirPolynome("à multiplier", poly.size());
                         System.out.print("Scalaire : ");
                         double scalaire = lireReel();
-                        Polynome resultatMult = poly.get(p1).multiplication(scalaire);
-                        System.out.println("Résultat : " + resultatMult.toString());
-                        proposerEnregistrement(resultatMult, poly);
+                        Polynome resultat = poly.get(p1).multiplication(scalaire);
+                        System.out.println("Résultat : " + resultat.toString());
+                        proposerEnregistrement(resultat);
                     }
                     break;
                 }
                 case 6: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
                     if (poly.size() < 2) {
-                        System.out.println("Il faut au moins 2 polynômes créés.");
+                        System.out.println(MESSAGE_ERREUR_NOMBRE_POLYNOME_CREE);
                         break;
                     }
+                    afficherListePolynomes(poly);
                     int p1 = choisirPolynome("dividende", poly.size());
                     int p2 = choisirPolynome("diviseur", poly.size());
                     try {
-                        Polynome[] resultat = poly.get(p1).division(poly.get(p2));
-                        System.out.println("Quotient : " + resultat[0].toString());
-                        System.out.println("Reste    : " + resultat[1].toString());
+                        Polynome[] res = poly.get(p1).division(poly.get(p2));
+                        System.out.println("Quotient : " + res[0].toString());
+                        System.out.println("Reste    : " + res[1].toString());
                     } catch (IllegalArgumentException e) {
                         System.out.println("Erreur : " + e.getMessage());
                     }
                     break;
                 }
                 case 7: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
                     if (poly.isEmpty()) {
-                        System.out.println("Aucun polynôme n'a été créé pour l'instant.");
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
                         break;
                     }
+                    afficherListePolynomes(poly);
                     int p1 = choisirPolynome("", poly.size());
                     double[] limites = poly.get(p1).getLimites();
-                    System.out.println("Limite en -∞ : " + limites[0]);
-                    System.out.println("Limite en +∞ : " + limites[1]);
+                    System.out.println("Limite en -infini : " + limites[0]);
+                    System.out.println("Limite en +infini : " + limites[1]);
                     break;
                 }
                 case 8: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
                     if (poly.isEmpty()) {
-                        System.out.println("Aucun polynôme créé pour l'instant.");
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
                         break;
                     }
+                    afficherListePolynomes(poly);
                     int p1 = choisirPolynome("", poly.size());
                     try {
                         double[] racines = poly.get(p1).getRacines();
@@ -203,21 +242,260 @@ public class Main {
                     }
                     break;
                 }
-                case 9:
+                case 9: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("", poly.size());
+                    System.out.println("Degré de P" + (p1 + 1) + " : " + (int) poly.get(p1).getDegre());
+                    break;
+                }
+                case 10: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("", poly.size());
+                    double[] coeffs = poly.get(p1).getCoefficients();
+                    System.out.print("Coefficients de P" + (p1 + 1)
+                                     + " (du degré 0 au degré " + (coeffs.length - 1) + ") : ");
+                    for (double c : coeffs) {
+                        System.out.print(c + "  ");
+                    }
+                    System.out.println();
+                    break;
+                }
+                case 11: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("", poly.size());
+                    System.out.print("Valeur de x : ");
+                    double x = lireReel();
+                    System.out.println("P" + (p1 + 1) + "(" + x + ") = " + poly.get(p1).image(x));
+                    break;
+                }
+                case 12: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("", poly.size());
+                    Polynome derivee = poly.get(p1).derivee();
+                    System.out.println("Dérivée de P" + (p1 + 1) + " : " + derivee.toString());
+                    proposerEnregistrement(derivee);
+                    break;
+                }
+                case 13: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("", poly.size());
+                    Polynome primitive = poly.get(p1).primitive();
+                    System.out.println("Primitive de P" + (p1 + 1) + " : " + primitive.toString()
+                                       + " + k  (k constante d'intégration)");
+                    proposerEnregistrement(primitive);
+                    break;
+                }
+                case 14: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("", poly.size());
+                    System.out.print("Borne inférieure a : ");
+                    double a = lireReel();
+                    System.out.print("Borne supérieure b : ");
+                    double b = lireReel();
+                    System.out.println("Integrale[" + a + ", " + b + "] P" + (p1 + 1)
+                                       + "(x) dx = " + poly.get(p1).integrale(a, b));
+                    break;
+                }
+                case 15: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherListePolynomes(poly);
+                    int p1 = choisirPolynome("", poly.size());
+                    System.out.print("Borne inférieure a : ");
+                    double a = lireReel();
+                    System.out.print("Borne supérieure b : ");
+                    double b = lireReel();
+                    System.out.println("Moyenne de P" + (p1 + 1) + " sur [" + a + ", " + b
+                                       + "] = " + poly.get(p1).moyenne(a, b));
+                    break;
+                }
+                case 16: {
+                    ArrayList<Polynome> poly = lirePolynomesDuFichier();
+                    if (poly.isEmpty()) {
+                        System.out.println(MESSAGE_ERREUR_AUCUN_POLYNOME_CREE);
+                        break;
+                    }
+                    afficherFicheRecapitulative(poly);
+                    break;
+                }
+                case 17: {
+                    effacerFichier();
+                    System.out.println("Le fichier a bien été réinitilisé.");
+                    break;
+                }
+                case 18:
                     System.out.println("Au revoir !");
                     break;
             }
-        } while (choixAction != 9);
+        } while (choixAction != 18);
     }
 
     /**
-     * Propose à l'utilisateur d'enregistrer le résultat comme nouveau polynôme
-     *
-     * @param resultat le polynôme résultat de l'opération
-     * @param poly     la liste des polynômes
+     * Lit le fichier de sauvegarde et retourne la liste des lignes brutes 
+     * correspondant à la définition d'un polynôme ("Px = ...").
+     * @return une {@link ArrayList} de {@link String} contenant les lignes du fichier. 
+     * Retourne une liste vide si le fichier est absent ou illisible.
      */
-    private static void proposerEnregistrement(Polynome resultat, ArrayList<Polynome> poly) {
-        System.out.println("Voulez-vous enregistrer ce résultat comme nouveau polynôme ?");
+    private static ArrayList<String> lireLigneBruteDuFichier() {
+        ArrayList<String> lignes = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(NOM_FICHIER))) {
+            String ligne;
+            while ((ligne = br.readLine()) != null) {
+                if (ligne.startsWith("P")) {
+                    lignes.add(ligne);
+                }
+            }
+        } catch (IOException e) {
+            // fichier absent ou vide : on retourne une liste vide
+        }
+        return lignes;
+    }
+
+    /**
+     * Lit le fichier de sauvegarde et reconstruit les objets {@link Polynome} 
+     * à partir des expressions littérales stockées après le signe '='.
+     * @return une {@link ArrayList} d'objets {@link Polynome} valides et reconstruits.
+     */
+    private static ArrayList<Polynome> lirePolynomesDuFichier() {
+        ArrayList<Polynome> poly = new ArrayList<>();
+        for (String ligne : lireLigneBruteDuFichier()) {
+            // format : "Px = <expression>"
+            int idx = ligne.indexOf('=');
+            if (idx != -1) {
+                String expression = ligne.substring(idx + 1).trim();
+                try {
+                    poly.add(new Polynome(expression));
+                } catch (IllegalArgumentException e) {
+                    // ligne mal formée, on l'ignore
+                }
+            }
+        }
+        return poly;
+    }
+
+    /**
+     * Affiche sur la console la liste numérotée et formatée des polynômes 
+     * actuellement disponibles.
+     * @param poly la liste des polynômes à afficher sur la console.
+     */
+    private static void afficherListePolynomes(ArrayList<Polynome> poly) {
+        System.out.println("\n--- Polynômes disponibles ---");
+        for (int i = 0; i < poly.size(); i++) {
+            System.out.println("  P" + (i + 1) + " = " + poly.get(i).toString());
+        }
+    }
+
+    /**
+     * Réinitialise le fichier de sauvegarde en écrasant son contenu 
+     * par une ligne d'en-tête par défaut.
+     */
+    private static void effacerFichier() {
+        try (FileWriter fw = new FileWriter(NOM_FICHIER, false)) {
+            fw.write("=== Session polynomes ===\n");
+        } catch (IOException e) {
+            System.out.println("Avertissement : impossible de créer le fichier " + NOM_FICHIER);
+        }
+    }
+
+    /**
+     * Ajoute une ligne de texte à la fin du fichier de sauvegarde (mode append).
+     * @param ligne la chaîne de caractères à inscrire dans le fichier.
+     */
+    private static void ecrireDansFichier(String ligne) {
+        try (FileWriter fw = new FileWriter(NOM_FICHIER, true)) {
+            fw.write(ligne + "\n");
+        } catch (IOException e) {
+            System.out.println("Avertissement : impossible d'écrire dans le fichier " + NOM_FICHIER);
+        }
+    }
+
+    /**
+     * Demande à l'utilisateur de choisir un polynôme, puis affiche l'intégralité 
+     * de ses caractéristiques (expression, degré, coefficients, limites, racines, dérivée, primitive).
+     * @param poly la liste des polynômes disponibles pour l'analyse.
+     */
+    private static void afficherFicheRecapitulative(ArrayList<Polynome> poly) {
+        afficherListePolynomes(poly);
+        int p1 = choisirPolynome("", poly.size());
+        Polynome p = poly.get(p1);
+
+        System.out.println("\n========================================");
+        System.out.println("  Fiche récapitulative de P" + (p1 + 1));
+        System.out.println("========================================");
+        System.out.println("  Expression    : " + p.toString());
+        System.out.println("  Degré         : " + (int) p.getDegre());
+
+        double[] coeffs = p.getCoefficients();
+        System.out.print("  Coefficients  : ");
+        for (double c : coeffs) {
+            System.out.print(c + "  ");
+        }
+        System.out.println();
+
+        double[] limites = p.getLimites();
+        System.out.println("  Limite en -infini : " + limites[0]);
+        System.out.println("  Limite en +infini : " + limites[1]);
+
+        try {
+            double[] racines = p.getRacines();
+            if (racines.length == 0) {
+                System.out.println("  Racines       : aucune");
+            } else {
+                System.out.print("  Racines       : ");
+                for (double r : racines) {
+                    System.out.print(r + "  ");
+                }
+                System.out.println();
+            }
+        } catch (UnsupportedOperationException e) {
+            System.out.println("  Racines       : non disponibles (polynôme construit par coefficients)");
+        }
+
+        System.out.println("  Dérivée       : " + p.derivee().toString());
+        System.out.println("  Primitive     : " + p.primitive().toString() + " + k");
+        System.out.println("========================================");
+    }
+
+    /**
+     * Interroge l'utilisateur pour savoir s'il souhaite sauvegarder le polynôme 
+     * issu d'un calcul dans le fichier texte.
+     * @param resultat le polynôme généré à sauvegarder.
+     */
+    private static void proposerEnregistrement(Polynome resultat) {
+        System.out.println("Voulez-vous enregistrer ce résultat ?");
         System.out.println("  1. Oui");
         System.out.println("  2. Non");
         System.out.print(" --> ");
@@ -226,23 +504,23 @@ public class Main {
             choix = lireEntierSaisi();
             if (choix != 1 && choix != 2) {
                 System.out.println("Veuillez saisir 1 ou 2.");
-                System.out.println(" --> ");
+                System.out.print(" --> ");
             }
         } while (choix != 1 && choix != 2);
 
         if (choix == 1) {
-            poly.add(resultat);
-            System.out.println("Polynôme enregistré en tant que P" + poly.size() + " !");
+            int numero = lireLigneBruteDuFichier().size() + 1;
+            ecrireDansFichier("P" + numero + " = " + resultat.toString());
+            System.out.println("Enregistré en tant que P" + numero + " !");
         }
     }
 
     /**
-     * Demande à l'utilisateur de choisir un polynôme parmi ceux créés
-     * et vérifie que le numéro saisi est valide.
-     *
-     * @param role du polynôme dans l'opération (ex: "premier", "second")
-     * @param nbPolynomes nombre total de polynômes disponibles
-     * @return l'indice (0-based) du polynôme choisi
+     * Gère la saisie utilisateur et le contrôle de cohérence pour sélectionner un polynôme 
+     * parmi ceux présents dans la liste.
+     * @param role le contexte ou rôle donné au polynôme ciblé (ex: "dividende", "premier")
+     * @param nbPolynomes le nombre total de polynômes exploitables
+     * @return l'index d'alignement (0-based) de la liste correspondant au choix utilisateur.
      */
     private static int choisirPolynome(String role, int nbPolynomes) {
         int numero;
@@ -259,10 +537,9 @@ public class Main {
     }
 
     /**
-     * Saisie d'un polynôme par ses coefficients (ordre croissant du degré).
-     * Exemple : [-2, 4, 3] donne 3x² + 4x - 2
-     *
-     * @return le polynôme saisi
+     * Instancie un nouveau polynôme en invitant l'utilisateur à saisir 
+     * individuellement chaque coefficient (du degré 0 jusqu'au degré maximal).
+     * @return l'objet {@link Polynome} correctement initialisé.
      */
     private static Polynome saisirParCoefficients() {
         System.out.print("Nombre de coefficients (= degré + 1) : \n --> ");
@@ -270,8 +547,7 @@ public class Main {
         do {
             nbCoefficients = lireEntierSaisi();
             if (nbCoefficients <= 0) {
-                System.out.print("Veuillez saisir un entier strictement positif ");
-                System.out.print(" --> ");
+                System.out.print("Veuillez saisir un entier strictement positif : ");
             }
         } while (nbCoefficients <= 0);
 
@@ -291,11 +567,9 @@ public class Main {
     }
 
     /**
-     * Saisie d'un polynôme par ses racines, leurs ordres de multiplicité
-     * et le coefficient du monôme de plus haut degré.
-     * Exemple : racines {2, -1}, ordres {1, 1}, coefficient 3 donne 3(x-2)(x+1)
-     *
-     * @return le polynôme saisi
+     * Instancie un nouveau polynôme à partir de ses racines réelles distinctes, 
+     * de leurs multiplicités associées et de son coefficient dominant.
+     * @return l'objet {@link Polynome} calculé à partir de la forme factorisée.
      */
     private static Polynome saisirParRacines() {
         System.out.print("Nombre de racines distinctes (0 pour une constante) : \n --> ");
@@ -313,7 +587,6 @@ public class Main {
         for (int i = 0; i < nbRacines; i++) {
             System.out.print("  Racine " + (i + 1) + " : ");
             racines[i] = lireReel();
-
             int ordre;
             do {
                 System.out.print("  Ordre de multiplicité de la racine " + (i + 1) + " : ");
@@ -337,8 +610,26 @@ public class Main {
     }
 
     /**
-     * Verifie que l'entier saisi est bien un nombre
-     * @return le nombre saisi
+     * Instancie un nouveau polynôme en analysant une chaîne de caractères textuelle 
+     * tapée par l'utilisateur (ex: "3x^2+4x-2").
+     * @return l'objet {@link Polynome} interprété.
+     */
+    private static Polynome saisirParChaine() {
+        while (true) {
+            System.out.print("Entrez le polynôme (ex : 3x^2+4x-2) : ");
+            String representation = saisie.nextLine().trim();
+            try {
+                return new Polynome(representation);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Erreur : " + e.getMessage() + ". Recommencez.");
+            }
+        }
+    }
+
+    /**
+     * Capture une entrée clavier et s'assure qu'elle correspond strictement à un entier relatif.
+     * Repose une question en boucle en cas d'erreur de format.
+     * @return l'entier saisi validé.
      */
     private static int lireEntierSaisi() {
         while (true) {
@@ -351,10 +642,9 @@ public class Main {
     }
 
     /**
-     * Verifie le nombre est saisi
-     * et si il y a une virgule,
-     * c'est remplacé par un point
-     * @return le double modifié
+     * Capture une entrée clavier et s'assure qu'elle correspond à un nombre réel (double).
+     * Remplace à la volée les virgules par des points pour tolérer la notation française.
+     * @return le nombre réel (double) saisi validé.
      */
     private static double lireReel() {
         while (true) {
@@ -365,5 +655,4 @@ public class Main {
             }
         }
     }
-    
 }
